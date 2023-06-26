@@ -1,0 +1,47 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+<h1>{% block title %}Criar Aula{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Criar Aula da Turma: {{ turma.nome }}</h3>
+    <form method="POST" action="{{ url_for('turmas.aulas.create', turma_id=turma.id) }}">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="date"
+                id="data_aula"
+                name="data_aula"
+                placeholder="Selecione a data da aula"
+                required="true"
+            />
+            <label for="data_aula">Data:</label>
+        </div>
+        <div class="mb-3">
+            <label for="horario_inicio">Horário de Início:</label>
+            <input 
+                type="text" 
+                id="horario_inicio" 
+                name="horario_inicio" 
+                value="{{ turma.horario_inicio.strftime('%H:%M') }}"
+                readonly
+                class="form-control"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="horario_fim">Horário de Fim:</label>
+            <input 
+                type="text" 
+                id="horario_fim" 
+                name="horario_fim" 
+                value="{{ turma.horario_fim.strftime('%H:%M') }}"
+                readonly
+                class="form-control"
+            />
+        </div>
+        <button type="submit">Criar Aula</button>
+    </form>
+</div>
+{% endblock %}

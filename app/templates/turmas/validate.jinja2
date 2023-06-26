@@ -1,0 +1,24 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+    <h1>{% block title %}Entrar em Turma{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Validar Senha da Turma {{ turma.nome }}</h1>
+    <form method="POST" action="{{ url_for('turmas.matricular', turma_id=turma.id) }}">
+        <div class="form-group">
+            <label for="senha">Senha da Turma:</label>
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite a senha da Turma"
+                required="true"
+            />
+        </div>
+        <button type="submit">Validar Senha</button>
+    </form>
+</div>
+{% endblock %}

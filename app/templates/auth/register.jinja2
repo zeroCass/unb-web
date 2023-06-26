@@ -1,0 +1,74 @@
+{% extends './base.jinja2' %}
+
+
+{% block header %}
+<h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Registrar</h1>
+    <form method="POST">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Digite seu nome"
+                required="true"
+            />
+            <label class="form-label" for="nome">Nome:</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input 
+                class="form-control"
+                type="text"
+                id="matricula"
+                name="matricula"
+                placeholder="Digite sua matrícula"
+                required="true"
+            />
+            <label class="form-label" for="matricula">Matrícula:</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu email"
+                required="true"
+            />
+            <label class="form-label" for="email">Email:</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password"
+                class="form-control"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                required="true"
+            />
+            <label class="form-label" for="senha">Senha:</label>
+        </div>
+        <div class="mb-3">
+            <h5>Tipo de Usuário:</h5>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="aluno" name="tipo_usuario" value="aluno" required="true" checked />
+                <label class="form-check-label" for="aluno">Aluno</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="professor" name="tipo_usuario" value="professor" required="true" />
+                <label class="form-check-label" for="professor">Professor</label>
+            </div>
+            
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </form>
+    <br>
+    <p>Já tem um conta ? <a href="{{ url_for('auth.login') }}">Entre.</a></p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,8 @@
+flask
+flask-login
+flask-sqlalchemy
+requests
+python-dotenv
+bootstrap-flask
+Flask-Migrate
+qrcode

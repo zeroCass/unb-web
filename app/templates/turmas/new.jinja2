@@ -1,0 +1,74 @@
+{% extends "./base.jinja2" %}
+
+
+{% block header %}
+<h1>{% block title %}Criar Turma{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="POST" action="{{ url_for('turmas.create') }}">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Digite o nome da turma"
+                required="true"
+            />
+            <label for="nome" class="form-label">Nome</label>
+        </div>
+        <div class="form-floating mb-3">
+        <div class="mb-3">
+            <label for="horario_inicio" class="form-label">Horario Inicio</label>
+            <input
+                class="form-control"
+                type="time"
+                id="horario_inicio"
+                name="horario_inicio"
+                placeholder="Selecione o horario que começa a aula"
+                required="true"
+            />
+        </div>
+        <div class="form-floating mb-3">
+        <div class="mb-3">
+            <label for="horario_fim" class="form-label">Horario Fim</label>
+            <input
+                class="form-control"
+                type="time"
+                id="horario_fim"
+                name="horario_fim"
+                placeholder="Selecione o horario que termina a aula"
+                required="true"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="senha" class="form-label">Senha</label>
+            <input
+                class="form-control"
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite a senha da turma"
+                required="true"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="semestre" class="form-label">Semestre</label>
+            <input
+                class="form-control"
+                type="number"
+                min="1"
+                max="15"
+                id="semestre"
+                name="semestre"
+                placeholder="Digite o semestre"
+                required="true"
+            />
+        </div>
+        <button type="submit">Criar</button>
+    </form>
+</div>
+
+{% endblock %}

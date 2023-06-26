@@ -1,0 +1,44 @@
+{% extends "./base.jinja2" %}
+{% from 'bootstrap5/utils.html' import render_icon %}
+
+{% block head %}
+    {{ super() }}
+    <style>
+        .btn-add {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Turmas</h1>
+        <div class="row row-col-1 row-cols-md-2 row-cols-lg-4">
+            {% for turma in turmas %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{{ url_for('turmas.show', turma_id=turma.id) }}">
+                                <h5 class="card-title">{{ turma.nome }}</h5>
+                            </a>
+                            <p>Horário de início: {{ turma.horario_inicio.strftime('%H:%M') }}</p>
+                            <p>Horário de Fim: {{ turma.horario_fim.strftime('%H:%M') }}</p>
+                            <p class="card-text">Professor: {{ turma.professor_id }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if user.tipo_usuario == "professor" %}
+            <div class="position-fixed bottom-0 end-0 p-3">
+                <a href="{{ url_for('turmas.new') }}" class="btn btn-floating btn-lg btn-primary">
+                    {{render_icon('plus') }} <span class="d-none d-xl-inline">Adicionar Turma</span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+     
+{% endblock %}

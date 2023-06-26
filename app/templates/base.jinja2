@@ -1,0 +1,67 @@
+{% from 'bootstrap5/utils.html' import render_messages %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/nav.html' import render_nav_item, render_breadcrumb_item %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    {% endblock %}
+
+    <title>Unb - Chamadas</title>
+    {% endblock %}
+</head>
+
+<body>
+    <head>
+        {% if current_user.is_authenticated %}
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            {{ render_nav_item("index.index", "Home") }}
+                            {{ render_nav_item("turmas.index", "Turmas") }}
+                            {{ render_nav_item("auth.logout", "Sair") }}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endif %}
+    </head>
+    <main class="container">
+        {{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
+        <!-- Your page content -->
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="text-center">
+        {% block footer %}
+        <small> &copy; 2023–
+            <script>document.write(new Date().getFullYear())</script> <a
+                href="https://github.com/zeroCass/chamada-saas" target="_blank">Repositorio</a>
+        </small>
+        {% endblock %}
+    </footer>
+
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+
+    {% endblock %}
+</body>
+
+</html>

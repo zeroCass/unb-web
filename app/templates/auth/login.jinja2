@@ -1,0 +1,51 @@
+{% extends './base.jinja2' %}
+
+
+{% block header %}
+<h1>{% block title %}Log In{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Log In</h1>
+    <form novalidate method="POST">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="matricula"
+                name="matricula"
+                placeholder="Digite sua matricula"
+                required="true"
+            />
+            <label for="matricula" class="form-label">Matricula:</label>
+            <div class="invalid-feedback">Matricula Invalida</div>
+            <div class="valid-feedback">Matricula Valida</div>
+        </div>
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                required="true"
+            />
+            <label for="senha" class="form-label">Senha:</label>
+            <div class="invalid-feedback">Senha Invalida</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <br>
+    <p>Não tem conta ? <a href="{{ url_for('auth.register') }}">Registre-se.</a></p>
+</div>
+<script>
+    const form = document.querySelector("form")
+    form.addEventListener("submit", e => {
+        if (!form.checkValidity()) {
+            e.preventDefault()
+        }
+        form.classList.add("was-validated")
+    })
+</script>
+{% endblock %}

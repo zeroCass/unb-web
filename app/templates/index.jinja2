@@ -1,0 +1,28 @@
+{% extends "base.jinja2" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Chamadas Unb</h1>
+    <div class="row rows-col-1 m-3">
+            <h5>Minhas Turmas</h5>
+        </div>
+    <div id="my-courses" class="row row-col-1 row-cols-md-2 row-cols-lg-4">
+        {% for turma in user.turmas %}
+            <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{{ url_for('turmas.show', turma_id=turma.id) }}">
+                                <h5 class="card-title">{{ turma.nome }}</h5>
+                            </a>
+                            <p>Horário de início: {{ turma.horario_inicio.strftime('%H:%M') }}</p>
+                            <p>Horário de Fim: {{ turma.horario_fim.strftime('%H:%M') }}</p>
+                            <p class="card-text">Professor: {{ turma.professor.nome }}</p>
+                        </div>
+                    </div>
+                </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

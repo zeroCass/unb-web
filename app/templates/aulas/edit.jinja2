@@ -1,0 +1,37 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+    <h1>{% block title %}Editar Aula{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Editar Status da Aula do dia {{ aula.data_aula.strftime('%d/%m/%Y') }}</h3>
+    <form method="POST" action="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id, data_atual=data_atual, hora_atual=hora_atual) }}">
+        <div class="form-group">
+            <label for="novo_status">Novo Status:</label>
+            <select class="form-control" name="novo_status" id="novo_status">
+                {% if data_atual > aula.data_aula %}
+                    <option value="finalizado" {% if aula.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
+                    <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                {% elif data_atual < aula.data_aula %}
+                    <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                    <option value="agendado" {% if aula.status == 'agendado' %}selected{% endif %}>Agendado</option>
+                {% else %}
+                    {% if hora_atual >= turma.horario_inicio and hora_atual < turma.horario_fim %}
+                        <option value="em andamento" {% if aula.status == 'em andamento' %}selected{% endif %}>Em andamento</option>
+                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                    {% elif hora_atual > turma.horario_inicio and hora_atual >= turma.horario_fim: %}
+                        <option value="finalizado" {% if aula.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
+                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                    {% else %}
+                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        <option value="agendado" {% if aula.status == 'agendado' %}selected{% endif %}>Agendado</option>
+                    {% endif %}
+                {% endif %}
+            </select>
+        </div>
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+{% endblock %}
