@@ -22,7 +22,7 @@ def gerar_qrcode(data: str):
     img = qr.make_image(fill_color="black", back_color="white")
 
     img_buffer = BytesIO()
-    img.save(img_buffer, format="PNG")
+    img.save(img_buffer)
     img_buffer.seek(0)
 
     return img_buffer
