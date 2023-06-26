@@ -16,30 +16,34 @@ def verificar_status_aulas(app):
             now = datetime.now()
 
             # Verificar todas as aulas do dia atual
-            aulas_do_dia = Aula.query.filter_by(data_aula=now.date()).all()
-            for aula in aulas_do_dia:
+            try:
+                aulas_do_dia = Aula.query.filter_by(data_aula=now.date()).all()
+                for aula in aulas_do_dia:
+                    logger.info(
+                        f"Aula: {aula.id} - {aula.token} -m {aula.turma_id}")
+
+                    if aula.status == "finalizado":
+                        continue
+
+                    turma = Turma.query.filter_by(id=aula.turma_id).first()
+
+                    logger.info(
+                        f"A turma da aula {aula.id} eh: turma: {turma.id} - {turma.nome}")
+
+                    horario_inicio = datetime.combine(
+                        now.date(), turma.horario_inicio)
+                    horario_fim = datetime.combine(now.date(), turma.horario_fim)
+
+                    # Verificar o status da aula e atualizá-lo conforme necessário
+                    if horario_inicio <= now <= horario_fim:
+                        aula.status = "em andamento"
+                    elif now > horario_fim:
+                        aula.status = "finalizado"
+
+                # Salvar as alterações no banco de dados
+                db.session.commit()
+            except Exception as e:
                 logger.info(
-                    f"Aula: {aula.id} - {aula.token} -m {aula.turma_id}")
-
-                if aula.status == "finalizado":
-                    continue
-
-                turma = Turma.query.filter_by(id=aula.turma_id).first()
-
-                logger.info(
-                    f"A turma da aula {aula.id} eh: turma: {turma.id} - {turma.nome}")
-
-                horario_inicio = datetime.combine(
-                    now.date(), turma.horario_inicio)
-                horario_fim = datetime.combine(now.date(), turma.horario_fim)
-
-                # Verificar o status da aula e atualizá-lo conforme necessário
-                if horario_inicio <= now <= horario_fim:
-                    aula.status = "em andamento"
-                elif now > horario_fim:
-                    aula.status = "finalizado"
-
-            # Salvar as alterações no banco de dados
-            db.session.commit()
+                        f"tabela aula nao existe {e}")
 
             time.sleep(30)

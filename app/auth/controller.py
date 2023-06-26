@@ -12,13 +12,13 @@ def login():
     #     return redirect(url_for("index.index"))
 
     if request.method == "POST":
-        matricula = request.form.get("matricula")
+        email = request.form.get("email")
         senha = request.form.get("senha")
 
         try:
             # Verificar se existe essa natricula cadastrada no banco de dados
-            user = Aluno.query.filter_by(matricula=matricula).first(
-            ) or Professor.query.filter_by(matricula=matricula).first()
+            user = Aluno.query.filter_by(email=email).first(
+            ) or Professor.query.filter_by(email=email).first()
             if user:
                 if user.senha == senha:
                     flash("Logado com sucesso!", category="sucess")
