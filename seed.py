@@ -6,13 +6,13 @@ professores = [
         "email": "456@unb.com", "senha": "123", "tipo_usuario": "professor"}
 ]
 
-alunos = [
+estudantes = [
     {"nome": "Joao das Neves", "matricula": "123",
-        "email": "123@unb.com", "senha": "123", "tipo_usuario": "aluno"},
+        "email": "123@unb.com", "senha": "123", "tipo_usuario": "estudante"},
     {"nome": "Pedro Pedrosa", "matricula": "321",
-        "email": "pedro@unb.com", "senha": "asdfg", "tipo_usuario": "aluno"},
+        "email": "pedro@unb.com", "senha": "asdfg", "tipo_usuario": "estudante"},
     {"nome": "Ester da Silva", "matricula": "231",
-        "email": "ester@unb.com", "senha": "asdfg", "tipo_usuario": "aluno"}
+        "email": "ester@unb.com", "senha": "asdfg", "tipo_usuario": "estudante"}
 ]
 
 turmas = [

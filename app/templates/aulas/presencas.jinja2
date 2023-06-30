@@ -10,18 +10,18 @@
         <thead>
             <tr>
                 <th>Matrícula</th>
-                <th>Aluno</th>
+                <th>estudante</th>
                 <th>Data/Hora</th>
             </tr>
         </thead>
         <tbody>
           <tr>
-            {% for aluno in alunos %}
-                <td> {{ aluno.matricula }}</td>
-                <td>{{ aluno.nome }}</td>
+            {% for estudante in estudantes %}
+                <td> {{ estudante.matricula }}</td>
+                <td>{{ estudante.nome }}</td>
                 <td>
                     {% for presenca in presencas %}
-                        {% if presenca.aluno_id == aluno.id %}
+                        {% if presenca.estudante_id == estudante.id %}
                             {{ presenca.data.strftime('%d/%m/%Y %H:%M') }}
                         {% endif %}
                     {% endfor %}

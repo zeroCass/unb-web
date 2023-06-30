@@ -4,7 +4,7 @@
     <p>Horario: {{ turma.horario_inicio.strftime('%H:%M') }} ate {{ turma.horario_fim.strftime('%H:%M') }}</p>
     <p>Status: {{ aula.status }}</p>
     <div class="d-flex">
-        {% if user.tipo_usuario == "aluno" and aula.status == "em andamento" %}
+        {% if user.tipo_usuario == "estudante" and aula.status == "em andamento" %}
             <form method="GET" action="{{ url_for('turmas.aulas.presenca.registrar_presenca', turma_id=turma.id, aula_id=aula.id) }}">
                 <button class="btn btn-primary" type="submit">Assinar Chamada</button>
             </form>

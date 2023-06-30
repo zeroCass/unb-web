@@ -1,7 +1,7 @@
 from ..webapp import db
 from flask import Blueprint, send_file, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from ..models import Aula, Presenca, Aluno
+from ..models import Aula, Presenca, Estudante
 from app.utils.qrcode import gerar_qrcode, qrcode_isvalid
 from datetime import datetime
 from flask_login import login_required, current_user
@@ -20,7 +20,7 @@ def register_blueprint(parent_blueprint: Blueprint):
 @login_required
 def registrar_presenca(turma_id, aula_id):
     """
-    registra a presenca de uma aluno, caso não haja regristo
+    registra a presenca de uma estudante, caso não haja regristo
 
     :return: redireciona para a pagina de exibicao de turma com 
     alguma mensagme de flash indicando o status da operacao
@@ -31,11 +31,11 @@ def registrar_presenca(turma_id, aula_id):
     if request.method == "POST":
 
         data_atual = datetime.now()
-        aluno_id = current_user.id
+        estudante_id = current_user.id
 
-        # Verifica se o aluno já possui uma presença registrada para essa aula
+        # Verifica se o estudante já possui uma presença registrada para essa aula
         presenca_existente = Presenca.query.filter_by(
-            aula_id=aula_id, aluno_id=aluno_id).first()
+            aula_id=aula_id, estudante_id=estudante_id).first()
         if presenca_existente:
             flash("Presença já foi registrada", category="warning")
         else:
@@ -43,7 +43,7 @@ def registrar_presenca(turma_id, aula_id):
             print(f"PRESENCA: POST {qrcode_content}")
             if qrcode_isvalid(qrcode_content, aula_id):
                 presenca = Presenca(
-                    aula_id=aula_id, data=data_atual, aluno_id=aluno_id)
+                    aula_id=aula_id, data=data_atual, estudante_id=estudante_id)
 
                 db.session.add(presenca)
                 db.session.commit()
@@ -55,14 +55,14 @@ def registrar_presenca(turma_id, aula_id):
         flash("Chamada Assinada", category="sucess")
         return redirect(url_for("turmas.show", turma_id=turma_id))
         
-@bp.route("/alunos", methods=["GET"])
+@bp.route("/estudantes", methods=["GET"])
 @login_required
 def listar_presencas(turma_id, aula_id):
     aula = Aula.query.get(aula_id)
-    alunos = Aluno.query.all()
+    estudantes = Estudante.query.all()
     presencas = Presenca.query.filter_by(aula_id=aula_id).all()
     
-    return render_template("aulas/presencas.jinja2", aula=aula, alunos=alunos, presencas=presencas)
+    return render_template("aulas/presencas.jinja2", aula=aula, estudantes=estudantes, presencas=presencas)
 
 
 @bp.route("/qrcode", methods=["GET"])

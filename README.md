@@ -1,8 +1,8 @@
 # Unb Web
-### Alunos: Mateus Valério e Maylla Krislainy
+### estudantes: Mateus Valério e Maylla Krislainy
 ### Engenharia de Software 2023.1
 
-O projeto Chamadas UNB SAAS tem como objetivo de ser um Software as a Service que possibilite o professor crie turmas e aulas para que seu alunos assinem a chamada. O aplicativo pretende fazer isso por meio da geração de um QRCODE único para cada aula. Com seu smartphone o aluno irá escanear esse QRCODE provido pelo professor e então será capaz de assinar a chamada.
+O projeto Chamadas UNB SAAS tem como objetivo de ser um Software as a Service que possibilite o professor crie turmas e aulas para que seu estudantes assinem a chamada. O aplicativo pretende fazer isso por meio da geração de um QRCODE único para cada aula. Com seu smartphone o estudante irá escanear esse QRCODE provido pelo professor e então será capaz de assinar a chamada.
 
 ## Instalar as Dependencias
 
@@ -27,7 +27,7 @@ Se desejas criar uma nova base de dados, será preciso:
 
 É importante dar seed na seguinte ordem:
 `flask --app application seed professores`
-`flask --app application seed alunos` 
+`flask --app application seed estudantes` 
 `flask --app application seed turmas`
 `flask --app application seed aulas`
 

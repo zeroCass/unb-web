@@ -78,8 +78,8 @@ def show(turma_id):
 @bp.route("/<int:turma_id>/matricular", methods=["GET", "POST"])
 def matricular(turma_id):
     print("tentou matricular")
-    # se nao for aluno, nao pode prosseguir
-    if current_user.tipo_usuario != "aluno":
+    # se nao for estudante, nao pode prosseguir
+    if current_user.tipo_usuario != "estudante":
         flash("Voce não pode realizar esta operação", category="error")
         return redirect(url_for("turmas.index"))
 

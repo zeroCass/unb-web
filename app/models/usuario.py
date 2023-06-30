@@ -9,4 +9,4 @@ class Usuario(UserMixin,db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(200), nullable=False)
     tipo_usuario = db.Column(
-        Enum("aluno", "professor", name="tipo_usuario"), nullable=False)
+        Enum("estudante", "professor", name="tipo_usuario"), nullable=False)
