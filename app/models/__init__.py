@@ -1,5 +1,5 @@
 from ..webapp import db
-from .aluno import Aluno
+from .estudante import Estudante
 from .aula import Aula
 from .professor import Professor
 from .turma import Turma

@@ -1,8 +1,8 @@
 """Initial migration.
 
-Revision ID: 902da918af26
+Revision ID: bcca55c93124
 Revises: 
-Create Date: 2023-06-26 09:42:38.424963
+Create Date: 2023-06-30 16:59:45.396750
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '902da918af26'
+revision = 'bcca55c93124'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,12 +24,12 @@ def upgrade():
     sa.Column('matricula', sa.String(length=15), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=False),
     sa.Column('senha', sa.String(length=200), nullable=False),
-    sa.Column('tipo_usuario', sa.Enum('aluno', 'professor', name='tipo_usuario'), nullable=False),
+    sa.Column('tipo_usuario', sa.Enum('estudante', 'professor', name='tipo_usuario'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('matricula')
     )
-    op.create_table('aluno',
+    op.create_table('estudante',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['id'], ['usuario.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -60,19 +60,19 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('matricula',
-    sa.Column('aluno_id', sa.Integer(), nullable=False),
+    sa.Column('estudante_id', sa.Integer(), nullable=False),
     sa.Column('turma_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['aluno_id'], ['aluno.id'], ),
+    sa.ForeignKeyConstraint(['estudante_id'], ['estudante.id'], ),
     sa.ForeignKeyConstraint(['turma_id'], ['turma.id'], ),
-    sa.PrimaryKeyConstraint('aluno_id', 'turma_id')
+    sa.PrimaryKeyConstraint('estudante_id', 'turma_id')
     )
     op.create_table('presenca',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('aula_id', sa.Integer(), nullable=False),
     sa.Column('data', sa.DateTime(), nullable=True),
-    sa.Column('aluno_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['aluno_id'], ['usuario.id'], ),
+    sa.Column('estudante_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['aula_id'], ['aula.id'], ),
+    sa.ForeignKeyConstraint(['estudante_id'], ['usuario.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
@@ -85,6 +85,6 @@ def downgrade():
     op.drop_table('aula')
     op.drop_table('turma')
     op.drop_table('professor')
-    op.drop_table('aluno')
+    op.drop_table('estudante')
     op.drop_table('usuario')
     # ### end Alembic commands ###

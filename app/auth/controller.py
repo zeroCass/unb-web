@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, login_required, logout_user, current_user
-from ..models import Aluno, Professor
+from ..models import Estudante, Professor
 from ..webapp import db
 
 bp = Blueprint("auth", __name__)
@@ -17,7 +17,7 @@ def login():
 
         try:
             # Verificar se existe essa natricula cadastrada no banco de dados
-            user = Aluno.query.filter_by(email=email).first(
+            user = Estudante.query.filter_by(email=email).first(
             ) or Professor.query.filter_by(email=email).first()
             if user:
                 if user.senha == senha:
@@ -25,8 +25,8 @@ def login():
                     login_user(user, remember=True)
                     # Verifica qual o tipo do usuario
                     user_type = None
-                    if isinstance(current_user, Aluno):
-                        user_type = "aluno"
+                    if isinstance(current_user, Estudante):
+                        user_type = "estudante"
                     elif isinstance(current_user, Professor):
                         user_type = "professor"
                     # Salva tipo usuario na sessao
@@ -59,7 +59,7 @@ def register():
         tipo_usuario = request.form.get("tipo_usuario")
 
         # Verificar se o email já está cadastrado no banco de dados
-        email_existente = Aluno.query.filter_by(email=email).first(
+        email_existente = Estudante.query.filter_by(email=email).first(
         ) or Professor.query.filter_by(email=email).first()
         if email_existente:
             flash("Email já cadastrado. Por favor, tente com outro email.",
@@ -67,8 +67,8 @@ def register():
 
         # Salvar os dados nas tabelas correspondentes com base no tipo de usuário
         user = ""
-        if tipo_usuario == "aluno":
-            user = Aluno(nome=nome, email=email,
+        if tipo_usuario == "estudante":
+            user = Estudante(nome=nome, email=email,
                          matricula=matricula, senha=senha, tipo_usuario=tipo_usuario)
         elif tipo_usuario == "professor":
             user = Professor(nome=nome, email=email,

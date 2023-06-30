@@ -46,13 +46,13 @@ def create_app():
         app.register_blueprint(bp, url_prefix=f"/{bp.name}")
 
     # login manager
-    from .models import Aluno, Professor
+    from .models import Estudante, Professor
 
     @login_manager.user_loader
     def load_user(user_id):
         print(f"the user id is: {user_id}")
-        return Aluno.query.get(int(user_id)) or Professor.query.get(int(user_id))
-        # return Aluno.query.filter_by(matricula=int(user_matricula)).first() or Professor.query.filter_by(matricula=int(user_matricula)).first()
+        return Estudante.query.get(int(user_id)) or Professor.query.get(int(user_id))
+        # return estudante.query.filter_by(matricula=int(user_matricula)).first() or Professor.query.filter_by(matricula=int(user_matricula)).first()
 
     # initialize commands
     from .cli_commands import seed_cli

@@ -7,5 +7,5 @@ class Presenca(db.Model):
     aula_id = db.Column(db.Integer, db.ForeignKey(
         'aula.id'), nullable=False)
     data = db.Column(db.DateTime, nullable=True)
-    aluno_id = db.Column(db.Integer, db.ForeignKey(
+    estudante_id = db.Column(db.Integer, db.ForeignKey(
         'usuario.id'), nullable=False)
