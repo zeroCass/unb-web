@@ -14,6 +14,7 @@ class Turma(db.Model):
         'professor.id'), nullable=False)
     
     aulas = db.relationship('Aula', backref=db.backref('turma_aulas', lazy=True)) #1 to N
+    exames = db.relationship('Exame', backref='turma_exame', lazy=True) #1 to N
 
     # token_presenca
 
