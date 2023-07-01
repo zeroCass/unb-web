@@ -4,11 +4,12 @@ from flask_login import login_required, current_user
 from ..models import Turma, Aula
 from datetime import datetime
 from .aulas_controller import register_blueprint as register_aulas_blueprint
+from .exames_controller import register_blueprint as register_exames_blueprint
 
 bp = Blueprint("turmas", __name__)
 # registra blueprint de aulas passando turmas como pai
 register_aulas_blueprint(bp)
-
+register_exames_blueprint(bp)
 
 @bp.route("/", methods=["GET"])
 @login_required

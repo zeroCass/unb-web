@@ -9,18 +9,18 @@
                 <button class="btn btn-primary" type="submit">Assinar Chamada</button>
             </form>
         {% elif user.tipo_usuario == "professor" %}
-            <div>
-                <a class="btn btn-primary" href="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id) }}">Editar</a>
-                <a class="btn btn-primary" href="{{ url_for('turmas.aulas.presenca.listar_presencas', turma_id=turma.id, aula_id=aula.id) }}">Acompanhar</a>
+            <div class="mb-2">
+                <a class="btn btn-primary mt-2" href="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id) }}">Editar</a>
+                <a class="btn btn-primary mt-2" href="{{ url_for('turmas.aulas.presenca.listar_presencas', turma_id=turma.id, aula_id=aula.id) }}">Acompanhar</a>
+                {% if aula.status == "em andamento" %}
+                    <a class="btn btn-primary mt-2"
+                    href="{{ url_for('turmas.aulas.presenca.qrcode_page', turma_id=aula.turma_id, aula_id=aula.id) }}">
+                        Qrcode
+                    </a>
+                {% endif %}
             </div>
         {% endif %}
-        {% if user.tipo_usuario == "professor" and aula.status == "em andamento" %}
-            <a 
-                class="btn btn-primary"
-                href="{{ url_for('turmas.aulas.presenca.qrcode_page', turma_id=aula.turma_id, aula_id=aula.id) }}">
-                    Qrcode
-            </a>
-        {% endif %}
+        
     </div>
     {# <div class="modal fade" id="qrcode-modal">
         <div class="modal-dialog modal-dialog-center">

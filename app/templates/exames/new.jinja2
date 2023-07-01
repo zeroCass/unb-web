@@ -1,0 +1,62 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+<h1>{% block title %}Criar Exame{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Criar Exame para a Turma: {{ turma.nome }}</h3>
+    <form method="POST" action="{{ url_for('turmas.exames.create', turma_id=turma.id) }}">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Digite o nome do Exame"
+                required="true"
+            />
+            <label for="nome" class="form-label">Nome</label>
+        </div>
+        <div class="form-floating mb-3">
+        <div class="mb-3">
+            <label for="data_inicio" class="form-label">Data Inicio</label>
+            <input
+                class="form-control"
+                type="datetime-local"
+                id="data_inicio"
+                name="data_inicio"
+                placeholder="Selecione a Data e horario que começa o Exame"
+                required="true"
+            />
+        </div>
+        <div class="form-floating mb-3">
+        <div class="mb-3">
+            <label for="data_fim" class="form-label">Data Fim</label>
+            <input
+                class="form-control"
+                type="datetime-local"
+                id="data_fim"
+                name="data_fim"
+                placeholder="Selecione a Data e horario que termina o exame"
+                required="true"
+            />
+        </div>
+        <div class="form-floating mb-3">
+        <div class="mb-3">
+            <label for="nota_exame" class="form-label">Nota do Exame:</label>
+            <input
+                class="form-control"
+                type="number"
+                step="0.01"
+                id="nota_exame"
+                name="nota_exame"
+                placeholder="Selecione qual sera o valor do exame"
+                required="true"
+            />
+        </div>
+        <button type="submit">Criar Exame</button>
+    </form>
+</div>
+{% endblock %}
