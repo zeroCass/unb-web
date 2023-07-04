@@ -10,31 +10,45 @@
     <div class="row rows-col-1 m-3">
             <h5>Minhas Questões</h5>
         </div>
-    <div id="my-questions" class="row flex-row">
+    <div id="my-questions" class="mb-3 row flex-row">
         {% for questao in questoes %}
+            {%if questao.tipo_questao != "multipla_escolha"%}
                 <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                     <div class="card">
                         <div class="card-body">
                             <p><small> Questão tipo: {{ questao.tipo_questao }}</small></p>
                             <h6>{{ questao.enunciado }}</h6>
-                            {%if questao.tipo_questao == "multipla_escolha"%}
-                                {% for questao_multipla_escolha in questoes_multipla_escolha %}
-                                <div style="max-height: 100px; overflow-y: auto;">
-                                    <ul>
-                                        <li>A: {{ questao_multipla_escolha.opcao_a }}</li>
-                                        <li>B: {{ questao_multipla_escolha.opcao_b }}</li>
-                                        <li>C: {{ questao_multipla_escolha.opcao_c }}</li>
-                                        <li>D: {{ questao_multipla_escolha.opcao_d }}</li>
-                                    </ul>
-                                </div>
-                                {% endfor %}
-                            {% endif %}
                             <p>Resposta: {{ questao.resposta }}</p>
                         </div>
                     </div>
                 </div>
+            {% endif %}
         {% endfor %}
     </div>
+    <div id="my-questions" class="mb-3 row flex-row">
+        {% for questao_multipla_escolha in questoes_multipla_escolha %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p><small> Questão tipo: {{ questao_multipla_escolha.tipo_questao }}</small></p>
+                        <h6>{{ questao_multipla_escolha.enunciado }}</h6>
+                        <div style="max-height: 100px; overflow-y: auto;">
+                            <ul>
+                                <li>A: {{ questao_multipla_escolha.opcao_a }}</li>
+                                <li>B: {{ questao_multipla_escolha.opcao_b }}</li>
+                                <li>C: {{ questao_multipla_escolha.opcao_c }}</li>
+                                <li>D: {{ questao_multipla_escolha.opcao_d }}</li>
+                            </ul>
+                        </div>
+                        <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
+                    </div>
+                </div>
+            </div>
+            
+        {% endfor %}
+
+    </div>
+
     <div class="position-fixed bottom-0 end-0 p-3">
         <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
                     {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>

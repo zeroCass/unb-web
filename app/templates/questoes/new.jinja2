@@ -23,20 +23,20 @@
         <div class="form-floating mb-3">
             <h5>Tipo de Questão:</h5>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="multipla_escolha" name="tipo_questao" value="multipla_escolha" required="true" checked />
-                <label class="form-check-label" for="multipla_escolha">multipla escolha</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="verdadeiro_falso" name="tipo_questao" value="verdadeiro_falso" required="true" checked />
-                <label class="form-check-label" for="verdadeiro_falso">verdadeiro ou falso</label>
-            </div>
-            <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" id="numerica" name="tipo_questao" value="numerica" required="true" checked />
                 <label class="form-check-label" for="numerica">Numérica</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="dissertativa" name="tipo_questao" value="dissertativa" required="true" checked />
+                <input class="form-check-input" type="radio" id="multipla_escolha" name="tipo_questao" value="multipla_escolha" required="true" />
+                <label class="form-check-label" for="multipla_escolha">Múltipla Escolha</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="dissertativa" name="tipo_questao" value="dissertativa" required="true" />
                 <label class="form-check-label" for="dissertativa">Dissertativa</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="verdadeiro_falso" name="tipo_questao" value="verdadeiro_falso" required="true" />
+                <label class="form-check-label" for="verdadeiro_falso">Verdadeiro ou Falso</label>
             </div>
         </div>
 
@@ -46,8 +46,7 @@
                     class="form-control"
                     type="text" 
                     id="opcao_a" 
-                    name="opcao_a" 
-                    required="true">
+                    name="opcao_a"/>
                 <label for="opcao_a">Opção A:</label>
             </div>
             <div class="form-floating mb-3">
@@ -55,28 +54,25 @@
                     class="form-control"
                     type="text" 
                     id="opcao_b" 
-                    name="opcao_b" 
-                    required="true">
+                    name="opcao_b"/>
                 <label for="opcao_b">Opção B:</label>
             </div>
-            <div class="form-floating mb-3" id="opcao_c" style="display: none;">
+            <div class="form-floating mb-3">
                 <input
                     class="form-control"
                     type="text" 
                     id="opcao_c" 
-                    name="opcao_c">
+                    name="opcao_c"/>
                 <label for="opcao_c">Opção C:</label>
-            </div>      
-            <div class="form-floating mb-3" id="opcao_d" style="display: none;">
+            </div>
+            <div class="form-floating mb-3">
                 <input
                     class="form-control"
                     type="text" 
                     id="opcao_d" 
-                    name="opcao_d">
+                    name="opcao_d"/>
                 <label for="opcao_d">Opção D:</label>
             </div>
-    
-            <button id="adicionar-opcoes" type="button" class="btn btn-primary">Adicionar Opções C e D</button>
         </div>
 
         <div class="form-floating mb-3" id="campo_resposta">
@@ -86,43 +82,54 @@
                 id="resposta"
                 name="resposta"
                 placeholder="Digite a resposta da questão"
-                required="true"
-            />
+                required="true"/>
             <label for="resposta" class="form-label">Resposta</label>
         </div>
 
-        <button type="submit">Criar</button>
+        <button type="submit">Criar Questão</button>
     </form>
 
-    <script>
-        var multiplaEscolhaBtn = document.getElementById("multipla_escolha");
-        var dissertativaBtn = document.getElementById("dissertativa");
-        var campoResposta = document.getElementById("campo_resposta");
-        var camposAdicionais = document.getElementById("campos_adicionais");
+ <script>
+    var multiplaEscolhaBtn = document.getElementById("multipla_escolha");
+    var dissertativaBtn = document.getElementById("dissertativa");
+    var campoResposta = document.getElementById("campo_resposta");
+    var camposAdicionais = document.getElementById("campos_adicionais");
 
-        function exibirCampoResposta() {
-            campoResposta.style.display = multiplaEscolhaBtn.checked ? "block" : "none";
+    function exibirCampoResposta() {
+        if (dissertativaBtn.checked) {
+            campoResposta.style.display = "none";
+            campoResposta.querySelector("input").removeAttribute("required");
+        } else {
+            campoResposta.style.display = "block";
+            campoResposta.querySelector("input").setAttribute("required", "true");
         }
+    }
 
-        multiplaEscolhaBtn.addEventListener("click", exibirCampoResposta);
-        dissertativaBtn.addEventListener("click", exibirCampoResposta);
+    dissertativaBtn.addEventListener("click", exibirCampoResposta);
+    dissertativaBtn.addEventListener("change", exibirCampoResposta);
 
-        function exibirCamposAdicionais() {
-            camposAdicionais.style.display = multiplaEscolhaBtn.checked ? "block" : "none";
+    function exibirCamposAdicionais() {
+        if (multiplaEscolhaBtn.checked) {
+            camposAdicionais.style.display = "block";
+        } else {
+            camposAdicionais.style.display = "none";
         }
+    }
 
-        multiplaEscolhaBtn.addEventListener("click", exibirCamposAdicionais);
+    multiplaEscolhaBtn.addEventListener("click", exibirCamposAdicionais);
 
-        var outrosRadioBtns = document.querySelectorAll('input[name="tipo_questao"]');
-        outrosRadioBtns.forEach(function(radio) {
-            radio.addEventListener("click", function() {
-                if (radio.id !== "multipla_escolha") {
-                    camposAdicionais.style.display = "none";
-                } else {
-                    exibirCamposAdicionais();
-                }
-            });
+    var outrosRadioBtns = document.querySelectorAll('input[name="tipo_questao"]');
+    outrosRadioBtns.forEach(function (radio) {
+        radio.addEventListener("click", function () {
+            if (radio.id === "dissertativa") {
+                campoResposta.style.display = "none";  // Oculta o campo de resposta para o botão "dissertativa"
+                camposAdicionais.style.display = "none";
+            } else {
+                exibirCampoResposta();  // Exibe ou oculta o campo de resposta para os outros botões
+                exibirCamposAdicionais();  // Exibe ou oculta os campos adicionais para o botão "multipla_escolha"
+            }
         });
-    </script>
+    });
+</script>
 
 {% endblock %}
