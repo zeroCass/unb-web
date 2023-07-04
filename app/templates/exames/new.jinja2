@@ -45,9 +45,9 @@
             />
         </div>
         {# questoes Container #}
-        <div class="container" id="questoesContainer">
+        <ul class="container" id="questoesContainer" style="list-style-type: none;">
             <h4>Questões</h4>
-        </div>
+        </ul>
         <div class="mb-3">
             <h5>Nota Exame: <span id="notaExame"></span></h5>
         </div>
@@ -82,15 +82,16 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" id="questoesSelecionadasInput" name="questoesSelecionadas" />
+        <input type="hidden" id="questoesSelecionadasInput" name="questoes_selecionadas" />
         <button id="submitForm" >Criar Exame</button>
     </form>
+    <button >clique</button>
 </div>
 <script>
     const isPosNumber = (value) => {
-        const regex = new RegExp(/^[0-9]+([.,][0-9]+)?/)
+        const regex = new RegExp(/^[0-9]+([.][0-9]+)?/)
         const match = value.match(regex)
-        return match ? value : 0
+        return match ? value : ""
     }
     
     const questoesContainer = document.getElementById("questoesContainer")
@@ -118,9 +119,9 @@
 
         console.log(questoesSelecionadas)
         questoesSelecionadas.forEach(questao => {
-            const novoElemeto = document.createElement("div")
+            const novoElemeto = document.createElement("li")
             novoElemeto.innerHTML = `
-                <div id="questao_id_${questao.id}" class="mb-3 mt-3 card">
+                <div value="${questao.id}" class="mb-3 mt-3 card">
                     <div class="card-header">
                         <input 
                             class="form-control w-25" 
@@ -130,8 +131,8 @@
                             placeholder="Nota da questão"
                             min="0"
                             max="10"
-                            value="0"
-                            pattern="[0-9]+([.,][0-9]+)?"
+                            step="any"
+                            pattern="[0-9]+([.][0-9]+)?"
                             onblur="this.value=isPosNumber(this.value)"
                             required
                         >
@@ -149,6 +150,7 @@
                 </div>
             `
             novoElemeto.classList.add("container")
+            novoElemeto.setAttribute("value", questao.id)
             questoesContainer.appendChild(novoElemeto)
         })
         
@@ -168,11 +170,28 @@
 
     })
 
-    const submitButton = document.getElementById("submitForm")
-    submitButton.addEventListener("click", (e) => {
+    // handle form submition
+    const form = document.querySelector("form")
+    form.addEventListener("submit", (e) => {
+        if (questoesSelecionadas.length ===  0) {
+            e.preventDefault()
+            alert("O exame deve ter ao menos uma questao!")
+            return
+        }
+
         const questoesSelecionadasInput = document.getElementById("questoesSelecionadasInput")
-        console.log(questoesSelecionadas)
-        questoesSelecionadasInput.value = JSON.stringify(questoesSelecionadas)
+        const questoesObject = []
+        questoesSelecionadas.forEach(questao => {
+            let notaQuestao = document.getElementById(`questao_nota_${questao.id}`).value
+            notaQuestao === "" ? notaQuestao = 0 : notaQuestao = parseFloat(notaQuestao)
+            const obj = {
+                "id_questao": questao.id,
+                "nota_questao": notaQuestao
+            }
+
+            questoesObject.push(obj)
+        })
+        questoesSelecionadasInput.value = JSON.stringify(questoesObject)
     })
 
 

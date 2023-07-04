@@ -1,7 +1,7 @@
 from ..webapp import db
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
-from ..models import Turma, Exame, Questao
+from ..models import Turma, Exame, Questao, questao_exame
 from datetime import datetime
 from app.utils.decorators import load_parent_resource_factory
 import json
@@ -34,26 +34,47 @@ def new(turma: Turma):
 @bp.route("/create", methods=["POST"])
 @login_required
 def create(turma_id):
-    print(request.form)
-    print(request.form.getlist('questoesSelecionadas'))
+    # converte o dado das questoes escolhidas em json 
+    questoes_selecionadas = json.loads(request.form.get("questoes_selecionadas"))
 
-    # nome = request.form.get("nome")
-    # data_inicio = request.form.get("data_inicio")
-    # data_fim = request.form.get("data_fim")
-    # nota_exame = request.form.get("nota_exame")
-    # professor_id = current_user.id
+    nome = request.form.get("nome")
+    data_inicio = request.form.get("data_inicio")
+    data_fim = request.form.get("data_fim")
+    nota_exame = request.form.get("nota_exame")
+    professor_id = current_user.id
+    data_inicio = datetime.strptime(data_inicio, "%Y-%m-%dT%H:%M")
+    data_fim = datetime.strptime(data_fim, "%Y-%m-%dT%H:%M")
 
-    # data_inicio = datetime.strptime(data_inicio, "%Y-%m-%dT%H:%M")
-    # data_fim = datetime.strptime(data_fim, "%Y-%m-%dT%H:%M")
+    new_exame = Exame(nome=nome, data_inicio=data_inicio, data_fim=data_fim, nota_exame=nota_exame, professor_id=professor_id, turma_id=turma_id)
 
-    # new_exame = Exame(nome=nome, data_inicio=data_inicio, data_fim=data_fim, nota_exame=nota_exame, professor_id=professor_id, turma_id=turma_id)
-    
-    # try:
-    #     db.session.add(new_exame)
-    #     db.session.commit()
-    #     flash("Exame criado")
-    # except Exception:
-    #     db.session.rollback()
-    #     flash("Erro ao criar Exame")
+
+    try:
+        db.session.add(new_exame)
+        db.session.flush()
+
+        # adicionar questoes e seus valores na tabela questao_exame (table associativa)
+        for questao in questoes_selecionadas:
+            association = questao_exame.insert().values(
+                id_exame=new_exame.id,
+                id_questao=questao["id_questao"],
+                nota_questao=questao["nota_questao"]
+            )
+            db.session.execute(association)
+        
+
+        db.session.commit()
+        flash("Exame criado")
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        flash("Erro ao criar Exame")
 
     return redirect(url_for("turmas.show", turma_id=turma_id))
+
+
+
+def teste(id_exame):
+    exame = Exame.query.filter_by(id=id_exame).first()
+    questoes = exame.questoes
+    print(exame.__dict__)
+    print(questoes)
