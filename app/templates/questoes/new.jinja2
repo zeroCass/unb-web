@@ -1,0 +1,128 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+<h1>{% block title %}Criar Questão{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Criar Questão</h3>
+    <form method="POST" action="{{ url_for('questoes.create', user_id=user_id) }}">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="enunciado"
+                name="enunciado"
+                placeholder="Digite o enunciado da questão"
+                required="true"
+            />
+            <label for="enunciado" class="form-label">Enunciado</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <h5>Tipo de Questão:</h5>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="multipla_escolha" name="tipo_questao" value="multipla_escolha" required="true" checked />
+                <label class="form-check-label" for="multipla_escolha">multipla escolha</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="verdadeiro_falso" name="tipo_questao" value="verdadeiro_falso" required="true" checked />
+                <label class="form-check-label" for="verdadeiro_falso">verdadeiro ou falso</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="numerica" name="tipo_questao" value="numerica" required="true" checked />
+                <label class="form-check-label" for="numerica">Numérica</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="dissertativa" name="tipo_questao" value="dissertativa" required="true" checked />
+                <label class="form-check-label" for="dissertativa">Dissertativa</label>
+            </div>
+        </div>
+
+        <div id="campos_adicionais" style="display: none;">
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text" 
+                    id="opcao_a" 
+                    name="opcao_a" 
+                    required="true">
+                <label for="opcao_a">Opção A:</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text" 
+                    id="opcao_b" 
+                    name="opcao_b" 
+                    required="true">
+                <label for="opcao_b">Opção B:</label>
+            </div>
+            <div class="form-floating mb-3" id="opcao_c" style="display: none;">
+                <input
+                    class="form-control"
+                    type="text" 
+                    id="opcao_c" 
+                    name="opcao_c">
+                <label for="opcao_c">Opção C:</label>
+            </div>      
+            <div class="form-floating mb-3" id="opcao_d" style="display: none;">
+                <input
+                    class="form-control"
+                    type="text" 
+                    id="opcao_d" 
+                    name="opcao_d">
+                <label for="opcao_d">Opção D:</label>
+            </div>
+    
+            <button id="adicionar-opcoes" type="button" class="btn btn-primary">Adicionar Opções C e D</button>
+        </div>
+
+        <div class="form-floating mb-3" id="campo_resposta">
+            <input
+                class="form-control"
+                type="text"
+                id="resposta"
+                name="resposta"
+                placeholder="Digite a resposta da questão"
+                required="true"
+            />
+            <label for="resposta" class="form-label">Resposta</label>
+        </div>
+
+        <button type="submit">Criar</button>
+    </form>
+
+    <script>
+        var multiplaEscolhaBtn = document.getElementById("multipla_escolha");
+        var dissertativaBtn = document.getElementById("dissertativa");
+        var campoResposta = document.getElementById("campo_resposta");
+        var camposAdicionais = document.getElementById("campos_adicionais");
+
+        function exibirCampoResposta() {
+            campoResposta.style.display = multiplaEscolhaBtn.checked ? "block" : "none";
+        }
+
+        multiplaEscolhaBtn.addEventListener("click", exibirCampoResposta);
+        dissertativaBtn.addEventListener("click", exibirCampoResposta);
+
+        function exibirCamposAdicionais() {
+            camposAdicionais.style.display = multiplaEscolhaBtn.checked ? "block" : "none";
+        }
+
+        multiplaEscolhaBtn.addEventListener("click", exibirCamposAdicionais);
+
+        var outrosRadioBtns = document.querySelectorAll('input[name="tipo_questao"]');
+        outrosRadioBtns.forEach(function(radio) {
+            radio.addEventListener("click", function() {
+                if (radio.id !== "multipla_escolha") {
+                    camposAdicionais.style.display = "none";
+                } else {
+                    exibirCamposAdicionais();
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -19,3 +19,12 @@ def index(user_id):
 
     return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
 
+@bp.route("/professor/<int:user_id>/new", methods=["GET"])
+@login_required
+def new(user_id):
+    return render_template("questoes/new.jinja2", user_id=user_id)
+
+@bp.route("/professor/<int:user_id>/create", methods=["POST"])
+@login_required
+def create(user_id):
+    return render_template("questoes/new.jinja2", user_id=user_id)
