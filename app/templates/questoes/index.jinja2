@@ -10,24 +10,28 @@
     <div class="row rows-col-1 m-3">
             <h5>Minhas Questões</h5>
         </div>
-    <div id="my-questions" class="mb-3 row flex-row">
+    <div id="my-questions" class="row flex-row">
         {% for questao in questoes %}
             {%if questao.tipo_questao != "multipla_escolha"%}
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="mb-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                     <div class="card">
                         <div class="card-body">
                             <p><small> Questão tipo: {{ questao.tipo_questao }}</small></p>
                             <h6>{{ questao.enunciado }}</h6>
                             <p>Resposta: {{ questao.resposta }}</p>
                         </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <a class="btn btn-sm btn-primary">Excluir</a>
+                        </div>
                     </div>
                 </div>
             {% endif %}
         {% endfor %}
     </div>
-    <div id="my-questions" class="mb-3 row flex-row">
+    <div id="my-questions" class="row flex-row">
         {% for questao_multipla_escolha in questoes_multipla_escolha %}
-            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <div class="mb-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                 <div class="card">
                     <div class="card-body">
                         <p><small> Questão tipo: {{ questao_multipla_escolha.tipo_questao }}</small></p>
@@ -41,6 +45,10 @@
                             </ul>
                         </div>
                         <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
+                    </div>
+                    <div class="card-footer">
+                            <a class="btn btn-sm btn-primary">Editar</a>
+                            <a class="btn btn-sm btn-primary">Excluir</a>
                     </div>
                 </div>
             </div>

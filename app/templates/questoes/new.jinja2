@@ -111,12 +111,16 @@
     function exibirCamposAdicionais() {
         if (multiplaEscolhaBtn.checked) {
             camposAdicionais.style.display = "block";
+            camposAdicionais.querySelector("input").setAttribute("required", "true");
         } else {
             camposAdicionais.style.display = "none";
+            camposAdicionais.querySelector("input").removeAttribute("required");
+
         }
     }
 
     multiplaEscolhaBtn.addEventListener("click", exibirCamposAdicionais);
+    multiplaEscolhaBtn.addEventListener("change", exibirCamposAdicionais);
 
     var outrosRadioBtns = document.querySelectorAll('input[name="tipo_questao"]');
     outrosRadioBtns.forEach(function (radio) {

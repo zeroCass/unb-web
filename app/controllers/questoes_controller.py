@@ -52,4 +52,46 @@ def create(user_id):
         db.session.rollback()
         flash("Erro ao criar Questao")
 
+    questoes = Questao.query.filter_by(professor_id=user_id).all()
+    questoes_multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(professor_id=user_id).all()
     return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
+
+@bp.route("/professor/<int:user_id>/edit/<int:questao_id>", methods=['GET', 'POST'])
+@login_required
+def edit(user_id, questao_id):
+    questao = Questao.query.get_or_404(questao_id)
+    # questao_multipla_escolha = QuestaoMultiplaEscolha.query.get_or_404(questao_id)
+
+    if request.method == "POST":
+        novo_enunciado = request.form.get('enunciado')
+        nova_resposta = request.form.get('resposta')
+
+        # Atualizar os campos desejados da questão com os novos valores
+        questao.enunciado = novo_enunciado
+        if questao.tipo_questao != "dissertativa":
+            questao.resposta = nova_resposta
+
+        # if questao.tipo_questao == 'multipla_escolha':
+        #     opcao_a = request.form.get('opcao_a')
+        #     opcao_b = request.form.get('opcao_b')
+        #     opcao_c = request.form.get('opcao_c')
+        #     opcao_d = request.form.get('opcao_d')
+
+        #     questao_multipla_escolha.enunciado = novo_enunciado
+        #     questao_multipla_escolha.opcao_a = opcao_a
+        #     questao_multipla_escolha.opcao_b = opcao_b
+        #     questao_multipla_escolha.opcao_c = opcao_c
+        #     questao_multipla_escolha.opcao_d = opcao_d
+        #     questao_multipla_escolha.resposta = nova_resposta   
+        try:
+            db.session.commit()
+            flash('Questão atualizada com sucesso', 'success')
+        except Exception:
+            db.session.rollback()
+            flash("Erro ao atualizar Questao")
+
+        questoes = Questao.query.filter_by(professor_id=user_id).all()
+        questoes_multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(professor_id=user_id).all()    
+        return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
+
+    return render_template("questoes/edit.jinja2",questao=questao, questao_id=questao_id)
