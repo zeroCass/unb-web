@@ -1,6 +1,7 @@
 {% extends "./base.jinja2" %}
 
 {% block header %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <h1>{% block title %}Criar Exame{% endblock %}</h1>
 {% endblock %}
 
@@ -43,20 +44,137 @@
                 required="true"
             />
         </div>
-        <div class="form-floating mb-3">
-        <div class="mb-3">
-            <label for="nota_exame" class="form-label">Nota do Exame:</label>
-            <input
-                class="form-control"
-                type="number"
-                step="0.01"
-                id="nota_exame"
-                name="nota_exame"
-                placeholder="Selecione qual sera o valor do exame"
-                required="true"
-            />
+        {# questoes Container #}
+        <div class="container" id="questoesContainer">
+            <h4>Questões</h4>
         </div>
-        <button type="submit">Criar Exame</button>
+        <div class="mb-3">
+            <h5>Nota Exame: <span id="notaExame"></span></h5>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#questoesModal">Adicionar Questoes</button>
+        {# modal #}
+        <div class="modal fade" id="questoesModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" >
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title fs-5" id="modalTitle">Adicionar Questoes</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                    {# content #}
+                    {# {% for questao in questoes %}
+                        <div class="container">
+                            <label>{{ questao.enunciado }}</label>
+                            <input type="checkbox" name="questoes" value="{{ questao.id }}" >
+                        </div>
+                    {% endfor %} #}
+                    {% for questao in questoes_json %}
+                        <div class="container">
+                            <label>{{ questao.enunciado }}</label>
+                            <input type="checkbox" name="questoes" value="{{ questao.id }}" >
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnIncluir">Incluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="questoesSelecionadasInput" name="questoesSelecionadas" />
+        <button id="submitForm" >Criar Exame</button>
     </form>
 </div>
+<script>
+    const isPosNumber = (value) => {
+        const regex = new RegExp(/^[0-9]+([.,][0-9]+)?/)
+        const match = value.match(regex)
+        return match ? value : 0
+    }
+    
+    const questoesContainer = document.getElementById("questoesContainer")
+    const btnIncluir = document.getElementById("btnIncluir")
+    const questoesSelecionadas = []
+
+    btnIncluir.addEventListener("click", () => {
+        const myModal = document.querySelector('#questoesModal')
+        const bsModal = bootstrap.Modal.getInstance(myModal)
+        bsModal.hide()
+
+        const checkboxes = document.querySelectorAll("input[name=questoes]:checked")
+        const questoes_json = {{ questoes_json }}
+        
+
+        checkboxes.forEach(check => {
+            const questaoID = check.value
+            const questaoSelecionada = questoes_json.find(questao => questao.id == questaoID)
+            if (questaoSelecionada) {
+                questoesSelecionadas.push(questaoSelecionada)
+            }
+            // desmarca checkbox
+            check.checked = false
+        })
+
+        console.log(questoesSelecionadas)
+        questoesSelecionadas.forEach(questao => {
+            const novoElemeto = document.createElement("div")
+            novoElemeto.innerHTML = `
+                <div id="questao_id_${questao.id}" class="mb-3 mt-3 card">
+                    <div class="card-header">
+                        <input 
+                            class="form-control w-25" 
+                            type="number" 
+                            name="questao_nota_${questao.id}" 
+                            id="questao_nota_${questao.id}" 
+                            placeholder="Nota da questão"
+                            min="0"
+                            max="10"
+                            value="0"
+                            pattern="[0-9]+([.,][0-9]+)?"
+                            onblur="this.value=isPosNumber(this.value)"
+                            required
+                        >
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h6 class="card-title float-left">Enunciado</h6>
+                            <p class="card-text ms-3 mb-1">${questao.enunciado}</p>
+                        </div>
+                        <div>
+                            <h6 class="card-title float-left">Resposta</h6>
+                            <p class="card-text ms-3 mb-1">${questao.resposta}</p>
+                        </div>
+                    </div>  
+                </div>
+            `
+            novoElemeto.classList.add("container")
+            questoesContainer.appendChild(novoElemeto)
+        })
+        
+        const notaExame = document.getElementById("notaExame")
+        const allInputs = document.querySelectorAll('input[name^="questao_nota_"]')
+        allInputs.forEach(notaInput => {
+            notaInput.addEventListener("input", () => {
+                let totalNota = 0
+                allInputs.forEach(nota => {
+                    if (nota.value != "")
+                        totalNota += parseFloat(isPosNumber(nota.value))
+                })
+                notaExame.innerHTML = totalNota.toFixed(2)
+            })
+            
+        })
+
+    })
+
+    const submitButton = document.getElementById("submitForm")
+    submitButton.addEventListener("click", (e) => {
+        const questoesSelecionadasInput = document.getElementById("questoesSelecionadasInput")
+        console.log(questoesSelecionadas)
+        questoesSelecionadasInput.value = JSON.stringify(questoesSelecionadas)
+    })
+
+
+</script>
 {% endblock %}
