@@ -114,11 +114,12 @@
             camposAdicionais.querySelector("input").setAttribute("required", "true");
         } else {
             camposAdicionais.style.display = "none";
-            camposAdicionais.querySelector("input").removeAttribute("required");
-
+            camposAdicionais.querySelectorAll("input").forEach(function(input) {
+                input.removeAttribute("required");
+            });
         }
     }
-
+    
     multiplaEscolhaBtn.addEventListener("click", exibirCamposAdicionais);
     multiplaEscolhaBtn.addEventListener("change", exibirCamposAdicionais);
 

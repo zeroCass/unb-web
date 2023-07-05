@@ -52,9 +52,8 @@ def create(user_id):
         db.session.rollback()
         flash("Erro ao criar Questao")
 
-    questoes = Questao.query.filter_by(professor_id=user_id).all()
-    questoes_multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(professor_id=user_id).all()
-    return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
+    return redirect(url_for('questoes.index', user_id=user_id))
+
 
 @bp.route("/professor/<int:user_id>/edit/<int:questao_id>", methods=['GET', 'POST'])
 @login_required
@@ -78,10 +77,8 @@ def edit(user_id, questao_id):
             db.session.rollback()
             flash("Erro ao atualizar Questao")
 
-        questoes = Questao.query.filter_by(professor_id=user_id).all()
-        questoes_multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(professor_id=user_id).all()    
-        return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
-
+        return redirect(url_for('questoes.index', user_id=user_id))
+        
     return render_template("questoes/edit.jinja2", questao=questao)
 
 @bp.route("/professor/<int:user_id>/edit/multipla_escolha/<int:questao_id>", methods=['GET', 'POST'])
@@ -112,10 +109,8 @@ def edit_multipla_escolha(user_id, questao_id):
             db.session.rollback()
             flash("Erro ao atualizar Questao")
 
-        questoes = Questao.query.filter_by(professor_id=user_id).all()
-        questoes_multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(professor_id=user_id).all()    
-        return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
-
+        return redirect(url_for('questoes.index', user_id=user_id))
+        
     return render_template("questoes/edit_multipla_escolha.jinja2", questao_multipla_escolha=questao_multipla_escolha)
 
 @bp.route("/professor/<int:user_id>/delete/<int:questao_id>", methods=['POST'])
