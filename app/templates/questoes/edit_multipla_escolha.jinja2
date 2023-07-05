@@ -1,0 +1,80 @@
+{% extends "./base.jinja2" %}
+
+{% block header %}
+<h1>{% block title %}Editar Questão Multipla Escolha{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Editar Questão Multipla Escolha (ID: {{ questao_multipla_escolha.id }})</h3>
+    <form method="POST" action="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}">
+        <div class="form-floating mb-3">
+            <input
+                class="form-control"
+                type="text"
+                id="enunciado"
+                name="enunciado"
+                value="{{ questao_multipla_escolha.enunciado }}"
+                required="true"
+            />
+            <label for="enunciado" class="form-label">Enunciado</label>
+        </div>
+
+        <div class="form-floating mb-3" id="campos_adicionais">
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="opcao_a"
+                    name="opcao_a"
+                    value="{{ questao_multipla_escolha.opcao_a }}"
+                />
+                <label for="opcao_a">Opção A:</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="opcao_b"
+                    name="opcao_b"
+                    value="{{ questao_multipla_escolha.opcao_b }}"
+                />
+                <label for="opcao_b">Opção B:</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="opcao_c"
+                    name="opcao_c"
+                    value="{{ questao_multipla_escolha.opcao_c }}"
+                />
+                <label for="opcao_c">Opção C:</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="opcao_d"
+                    name="opcao_d"
+                    value="{{ questao_multipla_escolha.opcao_d }}"
+                />
+                <label for="opcao_d">Opção D:</label>
+            </div>
+        </div>
+
+        <div class="form-floating mb-3" id="campo_resposta">
+            <input
+                class="form-control"
+                type="text"
+                id="resposta"
+                name="resposta"
+                value="{{ questao_multipla_escolha.resposta }}"
+                required="true"
+            />
+            <label for="resposta" class="form-label">Resposta</label>
+        </div>
+
+        <button type="submit">Editar Questão</button>
+    </form>
+{% endblock %}

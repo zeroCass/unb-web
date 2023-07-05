@@ -8,8 +8,8 @@
 <div class="container">
     <h1>Chamadas Unb</h1>
     <div class="row rows-col-1 m-3">
-            <h5>Minhas Questões</h5>
-        </div>
+        <h5>Minhas Questões</h5>
+    </div>
     <div id="my-questions" class="row flex-row">
         {% for questao in questoes %}
             {%if questao.tipo_questao != "multipla_escolha"%}
@@ -47,16 +47,13 @@
                         <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
                     </div>
                     <div class="card-footer">
-                            <a class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{{ url_for('questoes.edit_multipla_escolha', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
                             <a class="btn btn-sm btn-primary">Excluir</a>
                     </div>
                 </div>
             </div>
-            
         {% endfor %}
-
     </div>
-
     <div class="position-fixed bottom-0 end-0 p-3">
         <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
                     {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>

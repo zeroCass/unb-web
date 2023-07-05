@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
     <h3>Editar Questão (ID: {{ questao.id }})</h3>
-    <form method="POST" action="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao_id) }}">
+    <form method="POST" action="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao.id) }}">
         <div class="form-floating mb-3">
             <input
                 class="form-control"
@@ -19,51 +19,6 @@
             />
             <label for="enunciado" class="form-label">Enunciado</label>
         </div>
-
-        {% if questao.tipo_questao == 'multipla_escolha' %}
-            <div class="form-floating mb-3" id="campos_adicionais">
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="opcao_a"
-                        name="opcao_a"
-                        value="{{ questao.opcao_a }}"
-                    />
-                    <label for="opcao_a">Opção A:</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="opcao_b"
-                        name="opcao_b"
-                        value="{{ questao.opcao_b }}"
-                    />
-                    <label for="opcao_b">Opção B:</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="opcao_c"
-                        name="opcao_c"
-                        value="{{ questao.opcao_c }}"
-                    />
-                    <label for="opcao_c">Opção C:</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="opcao_d"
-                        name="opcao_d"
-                        value="{{ questao.opcao_d }}"
-                    />
-                    <label for="opcao_d">Opção D:</label>
-                </div>
-            </div>
-        {% endif %}
         {% if questao.tipo_questao != 'dissertativa' %}
             <div class="form-floating mb-3" id="campo_resposta">
                 <input
@@ -77,7 +32,6 @@
                 <label for="resposta" class="form-label">Resposta</label>
             </div>
         {% endif %}
-
         <button type="submit">Editar Questão</button>
     </form>
 {% endblock %}
