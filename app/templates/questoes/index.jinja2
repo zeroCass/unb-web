@@ -54,6 +54,7 @@
             </div>
         {% endfor %}
     </div>
+    
     <div class="position-fixed bottom-0 end-0 p-3">
         <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
                     {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>
@@ -61,22 +62,24 @@
     </div>
     
     {% for questao in questoes %}
-    <div class="modal fade" id="confirmDeleteModal-{{ questao.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
-                </div>
-                <div class="modal-body">
-                    <p>Você tem certeza de que deseja excluir esta questão?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger">Excluir</button>
+        <div class="modal fade" id="confirmDeleteModal-{{ questao.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Você tem certeza de que deseja excluir esta questão?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form method="POST" action="{{ url_for('questoes.delete', user_id=current_user.id, questao_id=questao.id) }}">
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% endfor %}
 </div>
 {% endblock %}
