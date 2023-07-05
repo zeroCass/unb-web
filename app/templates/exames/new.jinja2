@@ -63,12 +63,6 @@
                     </div>
                     <div class="modal-body">
                     {# content #}
-                    {# {% for questao in questoes %}
-                        <div class="container">
-                            <label>{{ questao.enunciado }}</label>
-                            <input type="checkbox" name="questoes" value="{{ questao.id }}" >
-                        </div>
-                    {% endfor %} #}
                     {% for questao in questoes_json %}
                         <div class="container">
                             <label>{{ questao.enunciado }}</label>
@@ -89,10 +83,12 @@
     <button >clique</button>
 </div>
 <script>
-    const isPosNumber = (value) => {
+    // returns a valid number given any input
+    const validNumber = (value) => {
         const regex = new RegExp(/^[0-9]+([.][0-9]+)?/)
         const match = value.match(regex)
-        return match ? value : ""
+        console.log(match)
+        return match ? parseFloat(match[0]) : 0.0
     }
 
     const addQuestaoElementToHTML = (questao) => {
@@ -101,19 +97,17 @@
         novoElemeto.innerHTML = `
             <div value="${questao.id}" class="mb-3 mt-3 card">
                 <div class="card-header d-flex flex-row">
-                    <div  class="nota-input-container d-flex flex-row w-75">
+                    <div  class="nota-input-container input-group d-flex flex-row w-75">
+                        <div class="input-group-text">Nota</div>
                         <input 
                             class="form-control w-sm-auto w-md-50" 
-                            type="number" 
+                            type="text" 
                             name="questao_nota_${questao.id}" 
-                            id="questao_nota_${questao.id}" 
-                            placeholder="Nota da questão"
-                            min="0"
-                            max="10"
-                            step="any"
                             pattern="[0-9]+([.][0-9]+)?"
-                            onblur="this.value=isPosNumber(this.value)"
+                            onblur="this.value=validNumber(this.value)"
                             required
+                            current-value="0"
+                            value="0"
                         >
                     </div>
                     <div class="button-remover-container d-flex flex-row w-25 justify-content-end">
@@ -139,15 +133,22 @@
 
     const setNotaInput = (questao) => {
         // configura os inputs de notas
-        const notaExame = document.getElementById("notaExame")
         const notaInput = document.querySelector(`input[name="questao_nota_${questao.id}"]`)
-
+        const notaExame = document.getElementById("notaExame")
+        
         notaInput.addEventListener("input", () => {
-            let totalNota = 0
-            if (notaInput.value != "")
-                totalNota += parseFloat(isPosNumber(notaInput.value))
+            const currentNota = parseFloat(notaInput.getAttribute("current-value"))
+            let notaExameValor = parseFloat(notaExame.value)
+            let novaNota = validNumber(notaInput.value)
 
-            notaExame.value = totalNota.toFixed(2)
+            // subtrai o valor atual para atualizar o total
+            notaExameValor -= currentNota
+            // se a nova nota = 0, entao o nao existe valor para ser somado
+            if (novaNota !== 0) {
+                notaExameValor += novaNota
+            }
+            notaExame.value = notaExameValor.toFixed(2)
+            notaInput.setAttribute("current-value", novaNota)
         })
             
 
