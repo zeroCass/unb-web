@@ -117,3 +117,18 @@ def edit_multipla_escolha(user_id, questao_id):
         return render_template('questoes/index.jinja2', questoes=questoes, questoes_multipla_escolha=questoes_multipla_escolha)
 
     return render_template("questoes/edit_multipla_escolha.jinja2", questao_multipla_escolha=questao_multipla_escolha)
+
+@bp.route("/professor/<int:user_id>/delete/<int:questao_id>", methods=['POST'])
+@login_required
+def delete(user_id, questao_id):
+    questao = Questao.query.get_or_404(questao_id)
+
+    try:
+        db.session.delete(questao)
+        db.session.commit()
+        flash('Questão excluída com sucesso', 'success')
+    except Exception:
+        db.session.rollback()
+        flash("Erro ao excluir questão")
+
+    return redirect(url_for('questoes.index', user_id=user_id))
