@@ -1,7 +1,7 @@
 from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
-from ..models import Turma, Exame, Questao, questao_exame
+from ..models import Turma, Exame, Questao, QuestaoExame
 from datetime import datetime
 from app.utils.decorators import load_parent_resource_factory
 import json
@@ -36,16 +36,16 @@ def new(turma: Turma):
 def create(turma_id):
     # converte o dado das questoes escolhidas em json 
     questoes_selecionadas = json.loads(request.form.get("questoes_selecionadas"))
-
     nome = request.form.get("nome")
     data_inicio = request.form.get("data_inicio")
     data_fim = request.form.get("data_fim")
-    nota_exame = request.form.get("nota_exame")
+    nota_exame = float(request.form.get("nota_exame"))
     professor_id = current_user.id
     data_inicio = datetime.strptime(data_inicio, "%Y-%m-%dT%H:%M")
     data_fim = datetime.strptime(data_fim, "%Y-%m-%dT%H:%M")
 
-    new_exame = Exame(nome=nome, data_inicio=data_inicio, data_fim=data_fim, nota_exame=nota_exame, professor_id=professor_id, turma_id=turma_id)
+    new_exame = Exame(nome=nome, data_inicio=data_inicio, data_fim=data_fim, nota_exame=nota_exame, 
+                      professor_id=professor_id, turma_id=turma_id)
 
 
     try:
@@ -54,13 +54,9 @@ def create(turma_id):
 
         # adicionar questoes e seus valores na tabela questao_exame (table associativa)
         for questao in questoes_selecionadas:
-            association = questao_exame.insert().values(
-                id_exame=new_exame.id,
-                id_questao=questao["id_questao"],
-                nota_questao=questao["nota_questao"]
-            )
-            db.session.execute(association)
-        
+            association = QuestaoExame(exame_id=new_exame.id, questao_id=questao["questao_id"],
+                            nota_questao=questao["nota_questao"])
+            db.session.add(association)
 
         db.session.commit()
         flash("Exame criado")
@@ -72,9 +68,15 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
+@bp.route("<int:exame_id>/show")
+@login_required
+def show(turma_id, exame_id):
+    exame = Exame.query.filter_by(id=exame_id).first()
+    questoes = exame.questoes # tabela associativa
 
-def teste(id_exame):
-    exame = Exame.query.filter_by(id=id_exame).first()
-    questoes = exame.questoes
-    print(exame.__dict__)
-    print(questoes)
+    for questao_exame in questoes:
+        questao = questao_exame.questao
+        nota_questao = questao_exame.nota_questao
+        print(f"""enunciado: {questao.enunciado}\t resposta: {questao.resposta}\t 
+              tipo_questao: {questao.tipo_questao}\t nota_questao: {nota_questao}""")
+    return f"<h1>{exame.nome}</h1>"

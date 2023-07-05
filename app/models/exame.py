@@ -1,5 +1,4 @@
 from . import db
-from .questao_exame import questao_exame
 
 class Exame(db.Model):
     __tablename__ = "exame"
@@ -17,7 +16,6 @@ class Exame(db.Model):
     
     notas = db.relationship('NotasExames', backref='exame_notas') #1 to N
     respostas = db.relationship('RespostaQuestaoExame', backref='exame_respostas') #1 to N
-
-    # Criamos uma tabela de associação chamada questao_exame
-    questoes = db.relationship('Questao', secondary=questao_exame, backref='exame_questoes') #N to N
+    # novo relacionamento com tabela associativa - Mateus creation
+    questoes = db.relationship("QuestaoExame", back_populates="exame") # N to N
     

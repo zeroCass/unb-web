@@ -48,8 +48,9 @@
         <ul class="container" id="questoesContainer" style="list-style-type: none;">
             <h4>Questões</h4>
         </ul>
-        <div class="mb-3">
-            <h5>Nota Exame: <span id="notaExame"></span></h5>
+        <div class="input-group mb-3 w-25">
+            <span class="input-group-text">Nota Exame</span>
+            <input type="text" name="nota_exame" id="notaExame" class="form-control" value="0.00" readonly>
         </div>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#questoesModal">Adicionar Questoes</button>
         {# modal #}
@@ -93,38 +94,16 @@
         const match = value.match(regex)
         return match ? value : ""
     }
-    
-    const questoesContainer = document.getElementById("questoesContainer")
-    const btnIncluir = document.getElementById("btnIncluir")
-    const questoesSelecionadas = []
 
-    btnIncluir.addEventListener("click", () => {
-        const myModal = document.querySelector('#questoesModal')
-        const bsModal = bootstrap.Modal.getInstance(myModal)
-        bsModal.hide()
-
-        const checkboxes = document.querySelectorAll("input[name=questoes]:checked")
-        const questoes_json = {{ questoes_json }}
-        
-
-        checkboxes.forEach(check => {
-            const questaoID = check.value
-            const questaoSelecionada = questoes_json.find(questao => questao.id == questaoID)
-            if (questaoSelecionada) {
-                questoesSelecionadas.push(questaoSelecionada)
-            }
-            // desmarca checkbox
-            check.checked = false
-        })
-
+    const addQuestaoElementToHTML = (questao) => {
         console.log(questoesSelecionadas)
-        questoesSelecionadas.forEach(questao => {
-            const novoElemeto = document.createElement("li")
-            novoElemeto.innerHTML = `
-                <div value="${questao.id}" class="mb-3 mt-3 card">
-                    <div class="card-header">
+        const novoElemeto = document.createElement("li")
+        novoElemeto.innerHTML = `
+            <div value="${questao.id}" class="mb-3 mt-3 card">
+                <div class="card-header d-flex flex-row">
+                    <div  class="nota-input-container d-flex flex-row w-75">
                         <input 
-                            class="form-control w-25" 
+                            class="form-control w-sm-auto w-md-50" 
                             type="number" 
                             name="questao_nota_${questao.id}" 
                             id="questao_nota_${questao.id}" 
@@ -137,38 +116,101 @@
                             required
                         >
                     </div>
-                    <div class="card-body">
-                        <div>
-                            <h6 class="card-title float-left">Enunciado</h6>
-                            <p class="card-text ms-3 mb-1">${questao.enunciado}</p>
-                        </div>
-                        <div>
-                            <h6 class="card-title float-left">Resposta</h6>
-                            <p class="card-text ms-3 mb-1">${questao.resposta}</p>
-                        </div>
-                    </div>  
+                    <div class="button-remover-container d-flex flex-row w-25 justify-content-end">
+                        <div questao-id=${questao.id} class="button-remove btn btn-primary">Remover</div>
+                    </div>
                 </div>
-            `
-            novoElemeto.classList.add("container")
-            novoElemeto.setAttribute("value", questao.id)
-            questoesContainer.appendChild(novoElemeto)
-        })
-        
+                <div class="card-body">
+                    <div>
+                        <h6 class="card-title float-left">Enunciado</h6>
+                        <p class="card-text ms-3 mb-1">${questao.enunciado}</p>
+                    </div>
+                    <div>
+                        <h6 class="card-title float-left">Resposta</h6>
+                        <p class="card-text ms-3 mb-1">${questao.resposta}</p>
+                    </div>
+                </div>  
+            </div>
+        `
+        novoElemeto.classList.add("container")
+        novoElemeto.setAttribute("li-questao-id", questao.id)
+        questoesContainer.appendChild(novoElemeto)
+    }
+
+    const setNotaInput = (questao) => {
+        // configura os inputs de notas
         const notaExame = document.getElementById("notaExame")
-        const allInputs = document.querySelectorAll('input[name^="questao_nota_"]')
-        allInputs.forEach(notaInput => {
-            notaInput.addEventListener("input", () => {
-                let totalNota = 0
-                allInputs.forEach(nota => {
-                    if (nota.value != "")
-                        totalNota += parseFloat(isPosNumber(nota.value))
-                })
-                notaExame.innerHTML = totalNota.toFixed(2)
-            })
+        const notaInput = document.querySelector(`input[name="questao_nota_${questao.id}"]`)
+
+        notaInput.addEventListener("input", () => {
+            let totalNota = 0
+            if (notaInput.value != "")
+                totalNota += parseFloat(isPosNumber(notaInput.value))
+
+            notaExame.value = totalNota.toFixed(2)
+        })
             
+
+    }
+    
+    const setRemoveButton = (questao) => {
+        // handle remover questoes
+        const questaoID = questao.id
+        const button = document.querySelector(`.button-remove[questao-id="${questaoID}"]`)
+
+        button.addEventListener("click", () => {
+            questoesSelecionadas = questoesSelecionadas.filter(questao => questao.id != questaoID)
+
+            // remove valor da nota total
+            const notaExame = document.getElementById("notaExame")
+            const notaInput = document.querySelector(`input[name="questao_nota_${questao.id}"]`)
+            if (notaInput.value != "") {
+                const notaTotal = parseFloat(notaExame.value) - parseFloat(notaInput.value)
+                notaExame.value = notaTotal.toFixed(2)
+            }
+            
+            // remove li element da lista ul
+            ulElement = document.getElementById("questoesContainer")
+            questaoLiElement = document.querySelector(`li[li-questao-id="${questaoID}"]`)
+            ulElement.removeChild(questaoLiElement)
         })
 
+    }
+
+    const questoesContainer = document.getElementById("questoesContainer")
+    const btnIncluir = document.getElementById("btnIncluir")
+    let questoesSelecionadas = []
+
+    btnIncluir.addEventListener("click", () => {
+        const myModal = document.querySelector('#questoesModal')
+        const bsModal = bootstrap.Modal.getInstance(myModal)
+        bsModal.hide()
+
+        const checkboxes = document.querySelectorAll("input[name=questoes]:checked")
+        const questoes_json = {{ questoes_json }}
+        
+        // adiciona questoes marcadas ao array questoesSelecionadas
+        checkboxes.forEach(check => {
+            const questaoID = check.value
+            const questaoSelecionada = questoes_json.find(questao => questao.id == questaoID)
+            // verifica se a questao ja esta no array
+            const findQuestao = questoesSelecionadas.find(questao => questao.id == questaoID)
+            console.log(findQuestao)
+
+            // add questao se é valida e não existe no array
+            if (questaoSelecionada && !findQuestao) {
+                questoesSelecionadas.push(questaoSelecionada)
+                addQuestaoElementToHTML(questaoSelecionada)
+                setNotaInput(questaoSelecionada)
+                setRemoveButton(questaoSelecionada)
+            }
+            // desmarca checkbox
+            check.checked = false
+        })
+
+
     })
+
 
     // handle form submition
     const form = document.querySelector("form")
@@ -185,7 +227,7 @@
             let notaQuestao = document.getElementById(`questao_nota_${questao.id}`).value
             notaQuestao === "" ? notaQuestao = 0 : notaQuestao = parseFloat(notaQuestao)
             const obj = {
-                "id_questao": questao.id,
+                "questao_id": questao.id,
                 "nota_questao": notaQuestao
             }
 
