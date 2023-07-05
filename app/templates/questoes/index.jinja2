@@ -1,0 +1,85 @@
+{% extends "base.jinja2" %}
+{% from 'bootstrap5/utils.html' import render_modal, render_icon %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Chamadas Unb</h1>
+    <div class="row rows-col-1 m-3">
+        <h5>Minhas Questões</h5>
+    </div>
+    <div id="my-questions" class="row flex-row">
+        {% for questao in questoes %}
+            {%if questao.tipo_questao != "multipla_escolha"%}
+                <div class="mb-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><small> Questão tipo: {{ questao.tipo_questao }}</small></p>
+                            <h6>{{ questao.enunciado }}</h6>
+                            <p>Resposta: {{ questao.resposta }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao.id }}">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div id="my-questions" class="row flex-row">
+        {% for questao_multipla_escolha in questoes_multipla_escolha %}
+            <div class="mb-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p><small> Questão tipo: {{ questao_multipla_escolha.tipo_questao }}</small></p>
+                        <h6>{{ questao_multipla_escolha.enunciado }}</h6>
+                        <div style="max-height: 100px; overflow-y: auto;">
+                            <ul>
+                                <li>A: {{ questao_multipla_escolha.opcao_a }}</li>
+                                <li>B: {{ questao_multipla_escolha.opcao_b }}</li>
+                                <li>C: {{ questao_multipla_escolha.opcao_c }}</li>
+                                <li>D: {{ questao_multipla_escolha.opcao_d }}</li>
+                            </ul>
+                        </div>
+                        <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('questoes.edit_multipla_escolha', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao_multipla_escolha.id }}">Excluir</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="position-fixed bottom-0 end-0 p-3">
+        <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
+                    {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>
+        </a>
+    </div>
+    
+    {% for questao in questoes %}
+        <div class="modal fade" id="confirmDeleteModal-{{ questao.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Você tem certeza de que deseja excluir esta questão?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form method="POST" action="{{ url_for('questoes.delete', user_id=current_user.id, questao_id=questao.id) }}">
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
