@@ -23,7 +23,7 @@ def register_blueprint(parent_blueprint: Blueprint):
 load_parent = load_parent_resource_factory(parent_model, "turma_id")
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("/new", methods=["GET"])
 @login_required
 @load_parent
 def new(turma: Turma):
