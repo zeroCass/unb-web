@@ -8,6 +8,6 @@ from .matricula import association_table
 from .questao import Questao
 from .questao_multipla_escolha import QuestaoMultiplaEscolha
 from .exame import Exame
-from .questao_exame import questao_exame
+from .questao_exame import QuestaoExame
 from .notas_exame import NotasExames
 from .resposta_questao_exame import RespostaQuestaoExame
