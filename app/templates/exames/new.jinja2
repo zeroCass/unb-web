@@ -225,7 +225,8 @@
         const questoesSelecionadasInput = document.getElementById("questoesSelecionadasInput")
         const questoesObject = []
         questoesSelecionadas.forEach(questao => {
-            let notaQuestao = document.getElementById(`questao_nota_${questao.id}`).value
+            // pega o valor do input 
+            let notaQuestao = document.querySelector(`input[name="questao_nota_${questao.id}"]`).value
             notaQuestao === "" ? notaQuestao = 0 : notaQuestao = parseFloat(notaQuestao)
             const obj = {
                 "questao_id": questao.id,
