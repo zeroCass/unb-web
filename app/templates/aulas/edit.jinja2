@@ -8,7 +8,7 @@
 <div class="container">
     <h3>Editar Status da Aula do dia {{ aula.data_aula.strftime('%d/%m/%Y') }}</h3>
     <form method="POST" action="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id, data_atual=data_atual, hora_atual=hora_atual) }}">
-        <div class="form-group">
+        <div class=" mb-3 form-group">
             <label for="novo_status">Novo Status:</label>
             <select class="form-control" name="novo_status" id="novo_status">
                 {% if data_atual > aula.data_aula %}
@@ -31,7 +31,7 @@
                 {% endif %}
             </select>
         </div>
-        <button type="submit">Salvar</button>
+        <button type="submit" class="btn btn-secondary">Salvar</button>
     </form>
 </div>
 {% endblock %}
