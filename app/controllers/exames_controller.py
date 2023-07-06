@@ -1,7 +1,7 @@
 from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
-from ..models import Turma, Exame, Questao, QuestaoExame
+from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame
 from datetime import datetime
 from app.utils.decorators import load_parent_resource_factory
 import json
@@ -68,15 +68,16 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
-@bp.route("<int:exame_id>/show")
+@bp.route("<int:exame_id>/show", methods=['GET', 'POST'])
 @login_required
 def show(turma_id, exame_id):
     exame = Exame.query.filter_by(id=exame_id).first()
-    questoes = exame.questoes # tabela associativa
+    questoes_exame = exame.questoes # tabela associativa
 
-    for questao_exame in questoes:
-        questao = questao_exame.questao
-        nota_questao = questao_exame.nota_questao
-        print(f"""enunciado: {questao.enunciado}\t resposta: {questao.resposta}\t 
-              tipo_questao: {questao.tipo_questao}\t nota_questao: {nota_questao}""")
-    return f"<h1>{exame.nome}</h1>"
+    # Obtendo as opções da questão de múltipla escolha
+    for questao_exame in questoes_exame:
+        if questao_exame.questao.tipo_questao == "multipla_escolha":
+            multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
+            questao_exame.opcoes = multipla_escolha
+
+    return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)

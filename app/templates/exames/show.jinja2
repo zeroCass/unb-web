@@ -1,16 +1,62 @@
+{% extends "./base.jinja2" %}
+{% from 'bootstrap5/utils.html' import render_icon %}
+
+{% block header %}
+<h1>{% block title %}Criar Turma{% endblock %}</h1>
+{% endblock %}
+
 {% block content %}
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h6>{{ exame.nome }}</h6>
-        </div>
-        <div class="card-body">
-            <p>Data Inicio: {{ exame.data_inicio.strftime("%Y-%m-%d %H:%M") }}</p>
-            <p>Data Fim: {{ exame.data_fim.strftime("%Y-%m-%d %H:%M") }}</p>
-        </div>    
-        <div class="card-footer text-muted">
-            <p>Nota Exame: {{exame.nota_exame}}</p>
-        </div>
+    <h4>{{ exame.nome }}</h4>
+    <div>
+        <form method="POST" action="{{ url_for('turmas.exames.show', turma_id=turma_id, exame_id=exame.id) }}">
+            {% for questao_exame in questoes_exame %}
+                <div class="mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title">Questão {{ loop.index }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Valor: {{ questao_exame.nota_questao }}</h6>
+                        <p class="card-text">{{ questao_exame.questao.enunciado }}</p>
+                    </div>
+                    <div class="card-footer">
+                        {% if questao_exame.questao.tipo_questao == "multipla_escolha" %}
+                            <ul class="list-group">
+                                {% for opcao in questao_exame.opcoes %}
+                                    <li class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
+                                        {{ opcao.opcao_a }}
+                                    </li>
+                                    <li class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
+                                        {{ opcao.opcao_b }}
+                                    </li>
+                                    <li class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
+                                        {{ opcao.opcao_c }}
+                                    </li>
+                                    <li class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
+                                        {{ opcao.opcao_d }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% elif questao_exame.questao.tipo_questao == "numerica" %}
+                            <input type="text" id="numero" name="numero" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        {% elif questao_exame.questao.tipo_questao == "verdadeiro_falso" %}
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Selecione Verdadeiro ou Falso</option>
+                                <option value="1">Verdadeiro</option>
+                                <option value="2">Falso</option>
+                            </select>
+                        {% else %}
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            {% if current_user.tipo_usuario == "aluno" %}
+                <button type="submit">Enviar</button>
+            {% endif %}
+        </form>
     </div>
-</div>
+<body>
 {% endblock %}
