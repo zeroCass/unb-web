@@ -118,12 +118,29 @@ def edit_multipla_escolha(user_id, questao_id):
 def delete(user_id, questao_id):
     questao = Questao.query.get_or_404(questao_id)
 
-    try:
-        db.session.delete(questao)
-        db.session.commit()
-        flash('Questão excluída com sucesso', 'success')
-    except Exception:
-        db.session.rollback()
-        flash("Erro ao excluir questão")
+    # Verifica se a questão é uma questão de múltipla escolha
+    if (questao.tipo_questao == "multipla_escolha"):
+        
+        questao_multipla_escolha = QuestaoMultiplaEscolha.query.get_or_404(questao_id)
+        # Remove as opções de múltipla escolha associadas à questão
+        questao_multipla_escolha.opcao_a = None
+        questao_multipla_escolha.opcao_b = None
+        questao_multipla_escolha.opcao_c = None
+        questao_multipla_escolha.opcao_d = None
+        try:
+            db.session.delete(questao_multipla_escolha)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            flash("Erro ao excluir questão de múltipla escolha")
+            return redirect(url_for('questoes.index', user_id=user_id))
+    else:
+        try:
+            db.session.delete(questao)
+            db.session.commit()
+            flash('Questão excluída com sucesso', 'success')
+        except Exception:
+            db.session.rollback()
+            flash("Erro ao excluir questão")
 
     return redirect(url_for('questoes.index', user_id=user_id))
