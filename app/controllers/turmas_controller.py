@@ -1,7 +1,7 @@
 from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from ..models import Turma, Aula
+from ..models import Turma, Aula, Exame
 from datetime import datetime
 from .aulas_controller import register_blueprint as register_aulas_blueprint
 from .exames_controller import register_blueprint as register_exames_blueprint
@@ -71,9 +71,10 @@ def create():
 def show(turma_id):
     turma = db.get_or_404(Turma, turma_id)
     aulas = Aula.query.filter_by(turma_id=turma_id).all()
+    exames = Exame.query.filter_by(turma_id=turma_id).all()
     if turma not in current_user.turmas:
         return redirect(url_for("turmas.matricular", turma_id=turma_id))
-    return render_template("turmas/show.jinja2", turma=turma, aulas=aulas, user=current_user)
+    return render_template("turmas/show.jinja2", turma=turma, aulas=aulas, exames=exames, user=current_user)
 
 
 @bp.route("/<int:turma_id>/matricular", methods=["GET", "POST"])

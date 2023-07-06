@@ -1,0 +1,16 @@
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h6>{{ exame.nome }}</h6>
+        </div>
+        <div class="card-body">
+            <p>Data Inicio: {{ exame.data_inicio.strftime("%Y-%m-%d %H:%M") }}</p>
+            <p>Data Fim: {{ exame.data_fim.strftime("%Y-%m-%d %H:%M") }}</p>
+        </div>    
+        <div class="card-footer text-muted">
+            <p>Nota Exame: {{exame.nota_exame}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
