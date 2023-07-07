@@ -68,11 +68,8 @@ def create(turma_id):
 
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> realiza_exame
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
@@ -159,12 +156,9 @@ def resposta_exame(turma_id, exame_id, estudante_id):
         return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
     except Exception as e:
         print(e)
-<<<<<<< HEAD
         flash(f"Error: {e}")
         return redirect(url_for("turmas.show", turma_id=turma_id))
-    
-=======
-    return redirect(url_for("turmas.show", turma_id=turma_id))
+   
 
 @bp.route("<int:exame_id>/Notas", methods=['GET'])
 @login_required
@@ -172,4 +166,3 @@ def notas(turma_id, exame_id):
     notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
     exame = Exame.query.filter_by(id=exame_id).first()
     return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame)
->>>>>>> realiza_exame
