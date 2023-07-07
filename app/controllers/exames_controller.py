@@ -1,7 +1,7 @@
 from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
-from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame, RespostaQuestaoExame, NotasExames
+from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame, RespostaQuestaoExame, NotasExames, Estudante
 from datetime import datetime
 from app.utils.decorators import load_parent_resource_factory
 import json
@@ -68,7 +68,6 @@ def create(turma_id):
 
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
-
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
@@ -119,3 +118,10 @@ def submit(turma_id, exame_id):
     except Exception as e:
         print(e)
     return redirect(url_for("turmas.show", turma_id=turma_id))
+
+@bp.route("<int:exame_id>/Notas", methods=['GET'])
+@login_required
+def notas(turma_id, exame_id):
+    notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
+    exame = Exame.query.filter_by(id=exame_id).first()
+    return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame)
