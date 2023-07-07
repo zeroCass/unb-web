@@ -1,0 +1,32 @@
+{% extends "./base.jinja2" %}
+{% from 'bootstrap5/utils.html' import render_icon %}
+
+{% block header %}
+<h1>{% block title %}Notas Exame{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4> Notas {{ exame.nome }}</h4>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Matricula</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota_exame, estudante in notas_exame %}
+                <tr>
+                <th scope="row">{{loop.index}}</th>
+                <td> {{ estudante.matricula }} </td>
+                <td> {{ estudante.nome }} </td>
+                <td> {{ nota_exame.nota_exame }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

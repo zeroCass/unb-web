@@ -27,7 +27,6 @@ def new(user_id):
 @bp.route("/professor/<int:user_id>/create", methods=["POST"])
 @login_required
 def create(user_id):
-
     enunciado = request.form['enunciado']
     tipo_questao = request.form['tipo_questao']
     opcao_a = request.form.get('opcao_a')
@@ -53,7 +52,6 @@ def create(user_id):
         flash("Erro ao criar Questao")
 
     return redirect(url_for('questoes.index', user_id=user_id))
-
 
 @bp.route("/professor/<int:user_id>/edit/<int:questao_id>", methods=['GET', 'POST'])
 @login_required
