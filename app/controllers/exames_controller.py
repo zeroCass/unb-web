@@ -97,21 +97,21 @@ def submit(turma_id, exame_id):
                 exame_db = Exame.query.filter_by(id=exame_id).first()
                 questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
                 
-                resposta_aluno =  request.form[questao]
-                nota_aluno_questao = 0
+                resposta_estudante =  request.form[questao]
+                nota_estudante_questao = 0
 
-                if questao_db.resposta.lower() == resposta_aluno.lower():
+                if questao_db.resposta.lower() == resposta_estudante.lower():
                     nota_exame += questao_exame.nota_questao
-                    nota_aluno_questao = questao_exame.nota_questao
+                    nota_estudante_questao = questao_exame.nota_questao
                 
                 # print(f"Questao ID: {questao_db.id} - nota:{questao_exame.nota_questao} \
-                #     resposta_aluno: {resposta_aluno} - resposta_questao: {questao_db.resposta} \
+                #     resposta_estudante: {resposta_estudante} - resposta_questao: {questao_db.resposta} \
                 #         acertou: {acertou}")
                 
                 # print(f"questao[{questao_id}]: {questao} - resposta: {request.form[questao]}")
 
                 resposta_questao_exame = RespostaQuestaoExame(estudante_id=current_user.id, exame_id=exame_id,
-                                            questao_id=questao_id, resposta_aluno=resposta_aluno, nota_aluno_questao=nota_aluno_questao)
+                                            questao_id=questao_id, resposta_estudante=resposta_estudante, nota_estudante_questao=nota_estudante_questao)
                 db.session.add(resposta_questao_exame)
         notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame=nota_exame)
         db.session.add(notas_exames)
@@ -144,14 +144,14 @@ def resposta_exame(turma_id, exame_id, estudante_id):
 
             resposta_questao_exame = RespostaQuestaoExame.query.filter_by(estudante_id=estudante_id,exame_id=exame_id, questao_id=questao.id).first()
             
-            questao.resposta_aluno = resposta_questao_exame.resposta_aluno
-            questao.nota_aluno_questao = resposta_questao_exame.nota_aluno_questao
+            questao.resposta_estudante = resposta_questao_exame.resposta_estudante
+            questao.nota_estudante_questao = resposta_questao_exame.nota_estudante_questao
             questoes_exame.append(questao)
         
         # for questao in questoes_exame:
         #     print(f"id:{questao.id} enunciado {questao.enunciado} \
-        #             nota_questao: {questao.nota_questao} nota_aluno: {questao.nota_aluno_questao} \
-        #             resposta: {questao.resposta} resposta_aluno: {questao.resposta_aluno}")
+        #             nota_questao: {questao.nota_questao} nota_estudante: {questao.nota_estudante_questao} \
+        #             resposta: {questao.resposta} resposta_estudante: {questao.resposta_estudante}")
 
         return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
     except Exception as e:
