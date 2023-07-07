@@ -32,6 +32,7 @@ def new(turma: Turma):
     # Acessando o valor do parâmetro 'turma_id' no URL
     return render_template("exames/new.jinja2", turma=turma, questoes=questoes, questoes_json=questoes_json)
 
+
 @bp.route("/create", methods=["POST"])
 @login_required
 def create(turma_id):
@@ -69,12 +70,17 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
-
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
     exame = Exame.query.filter_by(id=exame_id).first()
     questoes_exame = exame.questoes # tabela associativa
+
+    # Verificar se o aluno já realizou o exame
+    nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
+    if nota:
+        flash("Você já realizou este exame.")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
 
     # Obtendo as opções da questão de múltipla escolha
     for questao_exame in questoes_exame:
@@ -82,7 +88,6 @@ def show(turma_id, exame_id):
             multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
             questao_exame.questao.opcoes = multipla_escolha
     return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
-
 
 
 @bp.route("<int:exame_id>/submit", methods=['POST'])
@@ -100,7 +105,11 @@ def submit(turma_id, exame_id):
                 resposta_estudante =  request.form[questao]
                 nota_estudante_questao = 0
 
-                if questao_db.resposta.lower() == resposta_estudante.lower():
+                if questao_db.tipo_questao == "dissertativa":
+                    if resposta_estudante and resposta_estudante.strip() != "":
+                        nota_exame += questao_exame.nota_questao
+                        nota_estudante_questao = questao_exame.nota_questao
+                elif questao_db.resposta.lower() == resposta_estudante.lower():
                     nota_exame += questao_exame.nota_questao
                     nota_estudante_questao = questao_exame.nota_questao
                 
@@ -121,7 +130,6 @@ def submit(turma_id, exame_id):
         print(e)
         flash("Erro ao enviar exame")
     return redirect(url_for("turmas.show", turma_id=turma_id))
-
 
 
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
@@ -158,7 +166,7 @@ def resposta_exame(turma_id, exame_id, estudante_id):
         print(e)
         flash(f"Error: {e}")
         return redirect(url_for("turmas.show", turma_id=turma_id))
-   
+
 
 @bp.route("<int:exame_id>/notas", methods=['GET'])
 @login_required
