@@ -13,3 +13,7 @@ class Questao(db.Model):
     professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'), nullable=False)
     respostas = db.relationship('RespostaQuestaoExame', backref='questao_respostas') #1 to N
     exames = db.relationship("QuestaoExame", back_populates="questao") # tabela associativa N to N
+
+    def __repr__(self) -> str:
+        return f"<Questao ID: {self.id}> Enunciado:{self.enunciado} \
+            Tipo_questao:{self.tipo_questao} Resposta:{self.resposta}"

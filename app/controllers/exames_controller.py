@@ -69,6 +69,7 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
+
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
@@ -80,10 +81,9 @@ def show(turma_id, exame_id):
         if questao_exame.questao.tipo_questao == "multipla_escolha":
             multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
             questao_exame.questao.opcoes = multipla_escolha
-        
-    print(questao_exame.__dict__)
-
     return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
+
+
 
 @bp.route("<int:exame_id>/submit", methods=['POST'])
 @login_required
@@ -116,6 +116,46 @@ def submit(turma_id, exame_id):
         notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame=nota_exame)
         db.session.add(notas_exames)
         db.session.commit()
+        flash("Exame enviado com sucesso!")
     except Exception as e:
         print(e)
+        flash("Erro ao enviar exame")
     return redirect(url_for("turmas.show", turma_id=turma_id))
+
+
+
+@bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
+@login_required
+def resposta_exame(turma_id, exame_id, estudante_id):
+    try:
+        exame = Exame.query.filter_by(id=exame_id).first()
+        questoes_exame = [] # tabela associativa
+        # REFATORAR ISSO AQUI (CODIGO DUPLICADO DE SHOW)
+        # Obtendo as opções da questão de múltipla escolha
+        
+
+        for questao_exame in  exame.questoes:
+            questao = questao_exame.questao
+            questao.nota_questao = questao_exame.nota_questao # atribui nota ao objeto
+
+            if questao_exame.questao.tipo_questao == "multipla_escolha":
+                multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao.id).all()
+                questao.opcoes = multipla_escolha
+
+            resposta_questao_exame = RespostaQuestaoExame.query.filter_by(estudante_id=estudante_id,exame_id=exame_id, questao_id=questao.id).first()
+            
+            questao.resposta_aluno = resposta_questao_exame.resposta_aluno
+            questao.nota_aluno_questao = resposta_questao_exame.nota_aluno_questao
+            questoes_exame.append(questao)
+        
+        # for questao in questoes_exame:
+        #     print(f"id:{questao.id} enunciado {questao.enunciado} \
+        #             nota_questao: {questao.nota_questao} nota_aluno: {questao.nota_aluno_questao} \
+        #             resposta: {questao.resposta} resposta_aluno: {questao.resposta_aluno}")
+
+        return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
+    except Exception as e:
+        print(e)
+        flash(f"Error: {e}")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+    
