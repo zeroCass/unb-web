@@ -6,8 +6,8 @@ seed_cli = AppGroup("seed")
 
 @seed_cli.command("professores")
 def professores():
-    seed_estudantes()
-
+    seed_professores()
+    
 @seed_cli.command("estudantes")
 def estudantes():
     seed_estudantes()
