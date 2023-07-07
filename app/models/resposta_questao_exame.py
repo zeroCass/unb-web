@@ -7,9 +7,9 @@ class RespostaQuestaoExame(db.Model):
     nota_aluno_questao = db.Column(db.Float)
 
     # estudante_id armazenará o ID do estudante.
-    estudante_id = db.Column(db.Integer, db.ForeignKey('estudante.id'), nullable=False)
+    estudante_id = db.Column(db.Integer, db.ForeignKey('estudante.id'), primary_key=True, nullable=False)
     # exame_id armazenará o ID do exame.
-    exame_id = db.Column(db.Integer, db.ForeignKey('exame.id'), nullable=False)
+    exame_id = db.Column(db.Integer, db.ForeignKey('exame.id'), primary_key=True, nullable=False)
     # questao_id armazenará o ID da questao.
     questao_id = db.Column(db.Integer, db.ForeignKey('questao.id'), primary_key=True)
 
