@@ -9,3 +9,7 @@ class QuestaoExame(db.Model):
 
     questao = db.relationship("Questao", back_populates="exames") # refencia ao atributo exame na tabela Questao
     exame = db.relationship("Exame", back_populates="questoes") # refencia ao atributo questoes na tabela Exame
+
+    def __repr__(self) -> str:
+        return f"<QuestaoExame ExameID: {self.exame_id}> QuestaoID:{self.questao_id} \
+            Nota_Questao:{self.nota_questao}"
