@@ -22,7 +22,10 @@
                 <tr>
                 <th scope="row">{{loop.index}}</th>
                 <td> {{ estudante.matricula }} </td>
-                <td> {{ estudante.nome }} </td>
+                <td> <a href="{{ url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=estudante.id) }}">
+                    {{ estudante.nome }}
+                    </a>
+                </td>
                 <td> {{ nota_exame.nota_exame }}</td>
                 </tr>
             {% endfor %}

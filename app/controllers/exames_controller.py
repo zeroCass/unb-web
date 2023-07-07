@@ -160,9 +160,9 @@ def resposta_exame(turma_id, exame_id, estudante_id):
         return redirect(url_for("turmas.show", turma_id=turma_id))
    
 
-@bp.route("<int:exame_id>/Notas", methods=['GET'])
+@bp.route("<int:exame_id>/notas", methods=['GET'])
 @login_required
 def notas(turma_id, exame_id):
     notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
     exame = Exame.query.filter_by(id=exame_id).first()
-    return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame)
+    return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame, turma_id=turma_id)
