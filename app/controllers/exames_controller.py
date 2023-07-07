@@ -68,7 +68,7 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
-@bp.route("<int:exame_id>/show", methods=['GET', 'POST'])
+@bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
     exame = Exame.query.filter_by(id=exame_id).first()
@@ -81,3 +81,8 @@ def show(turma_id, exame_id):
             questao_exame.opcoes = multipla_escolha
 
     return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
+
+@bp.route("<int:exame_id>/show", methods=['POST'])
+@login_required
+def show(turma_id, exame_id):
+    return redirect(url_for("turmas.show", turma_id=turma_id))

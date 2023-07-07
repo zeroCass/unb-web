@@ -2,14 +2,14 @@
 {% from 'bootstrap5/utils.html' import render_icon %}
 
 {% block header %}
-<h1>{% block title %}Criar Turma{% endblock %}</h1>
+<h1>{% block title %}Exibir Exame{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <h4>{{ exame.nome }}</h4>
     <div>
-        <form method="POST" action="{{ url_for('turmas.exames.show', turma_id=turma_id, exame_id=exame.id) }}">
+        <form method="POST" action="{{ url_for('turmas.exames.submit', turma_id=turma_id, exame_id=exame.id) }}">
             {% for questao_exame in questoes_exame %}
                 <div class="mb-3 card">
                     <div class="card-body">
@@ -22,39 +22,39 @@
                             <ul class="list-group">
                                 {% for opcao in questao_exame.opcoes %}
                                     <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
-                                        {{ opcao.opcao_a }}
+                                        <input class="form-check-input me-1" type="radio" name="questao_multipla_{{ loop.index }}" value="A">
+                                            <label class="form-check-label" for="opcao_a_{{ loop.index }}">{{ opcao.opcao_a }}</label>
                                     </li>
                                     <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
-                                        {{ opcao.opcao_b }}
+                                        <input class="form-check-input me-1" type="radio" name="questao_multipla_{{ loop.index }}" value="B">
+                                            <label class="form-check-label" for="opcao_b_{{ loop.index }}">{{ opcao.opcao_b }}</label>
                                     </li>
                                     <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
-                                        {{ opcao.opcao_c }}
+                                        <input class="form-check-input me-1" type="radio" name="questao_multipla_{{ loop.index }}" value="C">
+                                            <label class="form-check-label" for="opcao_c_{{ loop.index }}">{{ opcao.opcao_c }}</label>
                                     </li>
                                     <li class="list-group-item">
-                                        <input class="form-check-input me-1" type="radio" name="questao{{ loop.index }}" value="{{ opcao.id }}" aria-label="...">
-                                        {{ opcao.opcao_d }}
+                                        <input class="form-check-input me-1" type="radio" name="questao_multipla_{{ loop.index }}" value="D">
+                                            <label class="form-check-label" for="opcao_d_{{ loop.index }}">{{ opcao.opcao_d }}</label>
                                     </li>
                                 {% endfor %}
                             </ul>
                         {% elif questao_exame.questao.tipo_questao == "numerica" %}
-                            <input type="text" id="numero" name="numero" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" id="numero" name="questao_numerica" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         {% elif questao_exame.questao.tipo_questao == "verdadeiro_falso" %}
-                            <select class="form-select" aria-label="Default select example">
+                            <select class="form-select" id="questao_verdadeiro_falso" name="questao_verdadeiro_falso">
                                 <option selected>Selecione Verdadeiro ou Falso</option>
-                                <option value="1">Verdadeiro</option>
-                                <option value="2">Falso</option>
+                                <option value="verdadeiro">Verdadeiro</option>
+                                <option value="Falso">Falso</option>
                             </select>
                         {% else %}
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <textarea class="form-control" id="dissertativa" rows="3" name="questao_dissertativa"></textarea>
                         {% endif %}
                     </div>
                 </div>
             {% endfor %}
-            {% if current_user.tipo_usuario == "aluno" %}
-                <button type="submit">Enviar</button>
+            {% if current_user.tipo_usuario == "estudante" %}
+                <button type="submit" class="btn btn-secondary">Finalizar Prova</button>
             {% endif %}
         </form>
     </div>
