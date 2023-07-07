@@ -1,10 +1,11 @@
 from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
-from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame
+from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame, RespostaQuestaoExame, NotasExames
 from datetime import datetime
 from app.utils.decorators import load_parent_resource_factory
 import json
+import re
 
 bp = Blueprint("exames", __name__)
 parent_model = Turma
@@ -78,11 +79,43 @@ def show(turma_id, exame_id):
     for questao_exame in questoes_exame:
         if questao_exame.questao.tipo_questao == "multipla_escolha":
             multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
-            questao_exame.opcoes = multipla_escolha
+            questao_exame.questao.opcoes = multipla_escolha
+        
+    print(questao_exame.__dict__)
 
     return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
 
-@bp.route("<int:exame_id>/show", methods=['POST'])
+@bp.route("<int:exame_id>/submit", methods=['POST'])
 @login_required
-def show(turma_id, exame_id):
+def submit(turma_id, exame_id):
+    print(request.form)
+    nota_exame = 0
+    try:
+        for questao in request.form:
+                questao_id = re.search("\d+$", questao)[0]
+                questao_db = Questao.query.filter_by(id=questao_id).first()
+                exame_db = Exame.query.filter_by(id=exame_id).first()
+                questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
+                
+                resposta_aluno =  request.form[questao]
+                nota_aluno_questao = 0
+
+                if questao_db.resposta.lower() == resposta_aluno.lower():
+                    nota_exame += questao_exame.nota_questao
+                    nota_aluno_questao = questao_exame.nota_questao
+                
+                # print(f"Questao ID: {questao_db.id} - nota:{questao_exame.nota_questao} \
+                #     resposta_aluno: {resposta_aluno} - resposta_questao: {questao_db.resposta} \
+                #         acertou: {acertou}")
+                
+                # print(f"questao[{questao_id}]: {questao} - resposta: {request.form[questao]}")
+
+                resposta_questao_exame = RespostaQuestaoExame(estudante_id=current_user.id, exame_id=exame_id,
+                                            questao_id=questao_id, resposta_aluno=resposta_aluno, nota_aluno_questao=nota_aluno_questao)
+                db.session.add(resposta_questao_exame)
+        notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame=nota_exame)
+        db.session.add(notas_exames)
+        db.session.commit()
+    except Exception as e:
+        print(e)
     return redirect(url_for("turmas.show", turma_id=turma_id))
