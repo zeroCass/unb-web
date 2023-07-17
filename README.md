@@ -24,10 +24,14 @@ Se desejas criar uma nova base de dados, será preciso:
 3 - (Opcional mas recomendado) Popular o banco de dados com dados fictícios
 
 ## Popular o banco de dados com dados iniciais fictícios
-
-É importante dar seed na seguinte ordem:
+Para dar seed em todas as tabelas basta usar este comando: `flask --app application seed seed-all`
+No entanto é possivel dar seed nas tabelas individualmente seguindo a seguinte ordem:
 `flask --app application seed professores`
-`flask --app application seed estudantes` 
 `flask --app application seed turmas`
+`flask --app application seed estudantes` 
 `flask --app application seed aulas`
-
+`flask --app application seed questoes`
+`flask --app application seed questoes_multipla_escolha`
+`flask --app application seed exames` 
+`flask --app application seed respostas_questoes_exames`
+`flask --app application seed notas_exames`
