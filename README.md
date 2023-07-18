@@ -1,37 +1,60 @@
 # Unb Web
-### estudantes: Mateus Valério e Maylla Krislainy
+### Estudantes: Mateus Valério e Maylla Krislainy
 ### Engenharia de Software 2023.1
 
-O projeto Chamadas UNB SAAS tem como objetivo de ser um Software as a Service que possibilite o professor crie turmas e aulas para que seu estudantes assinem a chamada. O aplicativo pretende fazer isso por meio da geração de um QRCODE único para cada aula. Com seu smartphone o estudante irá escanear esse QRCODE provido pelo professor e então será capaz de assinar a chamada.
+## Índice
+- [Sobre](#sobre)
+- [Como Usar](#como-usar)
+- [Configuração e Uso](#configuração-e-uso)
+- [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
+  - [Criar migração inicial para o aplicativo](#criar-migração-inicial-para-o-aplicativo)
+  - [Criar um novo banco de dados](#criar-um-novo-banco-de-dados)
+    
+## Sobre
+O projeto UNB WEB SAAS tem como objetivo de ser um Software as a Service que possibilite o professor crie turmas e aulas para que seu estudantes assinem a chamada. O aplicativo pretende fazer isso por meio da geração de um QRCODE único para cada aula. Com seu smartphone o estudante irá escanear esse QRCODE provido pelo professor e então será capaz de assinar a chamada. Além disso, os alunos também podem responder e revisar exames elaboradas pelos professores, promovendo um ambiente interativo de aprendizado.
 
-## Instalar as Dependencias
+## Como Usar
 
-Clone este repositório ou simplesmente baixe-o. Para instalar as dependência: `pip install -r requirements.txt`
 
-## Run App
+## Configuração e Uso
+Para utilizar este projeto, siga as seguintes etapas:
 
-` python -m flask --app application run` or `flask --app application run`
+1. Faça o download ou clone o repositório.
+2. Execute o comando `pip install -r requirements.txt` para instalar as dependências.
+3. Execute o comando ` python -m flask --app application run` or `flask --app application run` para iniciar o projeto.
+4. Acesse o projeto em `http://127.0.0.1:5000`.
 
-## Criar migration incial para app (Não necessário se a pasta migration já estiver presente no diretório)
+## Configuração do Banco de Dados
 
-`flask --app application db init` (Caso não haja um banco de dados presente) `flask --app application db migrate -m "Initial migration."` `flask --app application db upgrade`
+### Criar migração inicial para o aplicativo
+(Não necessário se a pasta "migrations" estiver presente no diretório e haja um banco de dados )
 
-## Criar novo banco de dados
+Execute os seguintes comandos:
+```shell
+flask --app application db init
+flask --app application db migrate -m "Initial migration."
+flask --app application db upgrade
+```
 
-Se desejas criar uma nova base de dados, será preciso:
-1 - Deletar a pasta migrations e o arquio data.sqlite dentro de /app
-2 - Executar os comandos para criar a migration inicial, explicados acima (db init, dg migrate e db upgrade)
-3 - (Opcional mas recomendado) Popular o banco de dados com dados fictícios
+### Criar um novo banco de dados
+Se desejar criar um novo banco de dados, siga os passos abaixo:
 
-## Popular o banco de dados com dados iniciais fictícios
-Para dar seed em todas as tabelas basta usar este comando: `flask --app application seed seed-all`
-No entanto é possivel dar seed nas tabelas individualmente seguindo a seguinte ordem:
-`flask --app application seed professores`
-`flask --app application seed turmas`
-`flask --app application seed estudantes` 
-`flask --app application seed aulas`
-`flask --app application seed questoes`
-`flask --app application seed questoes_multipla_escolha`
-`flask --app application seed exames` 
-`flask --app application seed respostas_questoes_exames`
-`flask --app application seed notas_exames`
+  1. Delete a pasta "migrations" e o arquivo "data.sqlite" dentro do diretório /app.
+  2. Execute os comandos para criar a migração inicial, como mencionado acima (db init, db migrate e db upgrade).
+  3. (Opcional, mas recomendado) Popule o banco de dados com dados fictícios.
+
+Para popular todas as tabelas, execute o seguinte comando:
+`flask --app application seed seed-all`
+
+No entanto, é possível popular as tabelas individualmente seguindo a ordem abaixo:
+```shell
+flask --app application seed professores
+flask --app application seed turmas
+flask --app application seed estudantes
+flask --app application seed aulas
+flask --app application seed questoes
+flask --app application seed questoes_multipla_escolha
+flask --app application seed exames
+flask --app application seed respostas_questoes_exames
+flask --app application seed notas_exames
+```
