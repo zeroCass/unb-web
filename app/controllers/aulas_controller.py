@@ -45,7 +45,7 @@ def create(turma_id):
     existing_aula = Aula.query.filter_by(
         turma_id=turma_id, data_aula=data_aula).first()
     if existing_aula:
-        flash("Já existe uma aula para essa data")
+        flash("Já existe uma aula para essa data", category="warning")
         return redirect(url_for("turmas.show", turma_id=turma_id))
 
     data_atual = datetime.now().date()
