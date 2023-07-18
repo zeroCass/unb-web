@@ -10,7 +10,7 @@ bp = Blueprint("questoes", __name__)
 def index(user_id):
     # Verificar se o usuário logado é um professor
     if not isinstance(current_user, Professor):
-        flash("Acesso não autorizado")
+        flash("Acesso não autorizado", category="warning")
         return render_template("index.jinja2", user=current_user)
     
     # Obtendo as questões relacionadas ao usuário
@@ -46,10 +46,10 @@ def create(user_id):
     try:
         db.session.add(nova_questao)
         db.session.commit()
-        flash("Questao criada")
+        flash("Questao criada", category="success")
     except Exception:
         db.session.rollback()
-        flash("Erro ao criar Questao")
+        flash("Erro ao criar Questao", category="error")
 
     return redirect(url_for('questoes.index', user_id=user_id))
 
@@ -73,8 +73,7 @@ def edit(user_id, questao_id):
             flash('Questão atualizada com sucesso', 'success')
         except Exception:
             db.session.rollback()
-            flash("Erro ao atualizar Questao")
-
+            flash("Erro ao atualizar Questao", category="warning")
         return redirect(url_for('questoes.index', user_id=user_id))
         
     return render_template("questoes/edit.jinja2", questao=questao)
@@ -105,7 +104,7 @@ def edit_multipla_escolha(user_id, questao_id):
             flash('Questão atualizada com sucesso', 'success')
         except Exception:
             db.session.rollback()
-            flash("Erro ao atualizar Questao")
+            flash("Erro ao atualizar Questao", category="warning")
 
         return redirect(url_for('questoes.index', user_id=user_id))
         
@@ -130,7 +129,7 @@ def delete(user_id, questao_id):
             db.session.commit()
         except Exception:
             db.session.rollback()
-            flash("Erro ao excluir questão de múltipla escolha")
+            flash("Erro ao excluir questão de múltipla escolha", category="error")
             return redirect(url_for('questoes.index', user_id=user_id))
     else:
         try:
@@ -139,6 +138,6 @@ def delete(user_id, questao_id):
             flash('Questão excluída com sucesso', 'success')
         except Exception:
             db.session.rollback()
-            flash("Erro ao excluir questão")
+            flash("Erro ao excluir questão", category="error")
 
     return redirect(url_for('questoes.index', user_id=user_id))

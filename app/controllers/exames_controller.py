@@ -61,11 +61,11 @@ def create(turma_id):
             db.session.add(association)
 
         db.session.commit()
-        flash("Exame criado")
+        flash("Exame criado", category="success")
     except Exception as e:
         db.session.rollback()
         print(e)
-        flash("Erro ao criar Exame")
+        flash("Erro ao criar Exame", category="error")
 
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
@@ -79,8 +79,8 @@ def show(turma_id, exame_id):
     # Verificar se o aluno já realizou o exame
     nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
     if nota:
-        flash("Você já realizou este exame.")
-        return redirect(url_for("turmas.show", turma_id=turma_id))
+        flash("Você já realizou este exame.", category="info")
+        return redirect( url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
 
     # Obtendo as opções da questão de múltipla escolha
     for questao_exame in questoes_exame:
@@ -99,7 +99,7 @@ def submit(turma_id, exame_id):
         for questao in request.form:
                 questao_id = re.search("\d+$", questao)[0]
                 questao_db = Questao.query.filter_by(id=questao_id).first()
-                exame_db = Exame.query.filter_by(id=exame_id).first()
+                # exame_db = Exame.query.filter_by(id=exame_id).first()
                 questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
                 
                 resposta_estudante =  request.form[questao]
@@ -125,10 +125,10 @@ def submit(turma_id, exame_id):
         notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame=nota_exame)
         db.session.add(notas_exames)
         db.session.commit()
-        flash("Exame enviado com sucesso!")
+        flash("Exame enviado com sucesso!", category="success")
     except Exception as e:
         print(e)
-        flash("Erro ao enviar exame")
+        flash("Erro ao enviar exame", category="error")
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
@@ -164,7 +164,7 @@ def resposta_exame(turma_id, exame_id, estudante_id):
         return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
     except Exception as e:
         print(e)
-        flash(f"Error: {e}")
+        flash(f"Error: {e}", category="error")
         return redirect(url_for("turmas.show", turma_id=turma_id))
 
 

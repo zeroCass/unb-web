@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='UnB-Web.ico') }}">
     {% block head %}
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     {% endblock %}
 
-    <title>Unb - Chamadas</title>
+    <title>Unb Web</title>
     {% endblock %}
 </head>
 
@@ -54,8 +54,8 @@
     <footer class="text-center">
         {% block footer %}
         <small> &copy; 2023–
-            <script>document.write(new Date().getFullYear())</script> <a
-                href="https://github.com/zeroCass/chamada-saas" target="_blank">Repositorio</a>
+            <script>document.write(new Date().getFullYear())</script>
+            <a href="https://github.com/zeroCass/unb-web" target="_blank">Repositorio</a>
         </small>
         {% endblock %}
     </footer>

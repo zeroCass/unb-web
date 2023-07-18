@@ -11,7 +11,7 @@
     <h3>Turma {{ turma.nome }}</h3>
     <p>Semestre: {{ turma.semestre }}</p>
     <b>Aulas:</b>
-    <div class="row row-col-1 row-cols-md-2 row-cols-lg-4">
+    <div class="mb-3 row row-col-1 row-cols-md-2 row-cols-lg-4">
         {% for aula in aulas %}
             <div>
                 {% include 'aulas/show.jinja2' %}

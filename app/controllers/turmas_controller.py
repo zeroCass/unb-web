@@ -32,7 +32,7 @@ def new():
 def validate():
     if request.method == "POST":
         # senha = request.form.get("senha")
-        flash("Você foi matriculado em uma turma")
+        flash("Você foi matriculado em uma turma", category="info")
         return redirect(url_for("turmas.index"))
 
     return render_template("turmas/validate.jinja2")
@@ -59,10 +59,10 @@ def create():
     try:
         db.session.add(new_turma)
         db.session.commit()
-        flash("Turma criada")
+        flash("Turma criada", category="success")
     except Exception:
         db.session.rollback()
-        flash("Erro ao criar turma")
+        flash("Erro ao criar turma", category="error")
 
     return redirect(url_for("turmas.index"))
 
@@ -99,7 +99,7 @@ def matricular(turma_id):
             try:
                 current_user.turmas.append(turma)
                 db.session.commit()
-                flash(f"Matriculou-se na Turma {turma.nome}")
+                flash(f"Matriculou-se na Turma {turma.nome}", category="info")
                 return redirect(url_for("turmas.show", turma_id=turma_id))
             except Exception as e:
                 print(f"Algo deu erro: {e}")
