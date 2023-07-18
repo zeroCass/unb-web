@@ -14,6 +14,15 @@
 O projeto UNB WEB SAAS tem como objetivo de ser um Software as a Service que possibilite o professor crie turmas e aulas para que seu estudantes assinem a chamada. O aplicativo pretende fazer isso por meio da geração de um QRCODE único para cada aula. Com seu smartphone o estudante irá escanear esse QRCODE provido pelo professor e então será capaz de assinar a chamada. Além disso, os estudantes também podem responder e revisar exames elaboradas pelos professores, promovendo um ambiente interativo de aprendizado.
 
 ## Como Usar
+
+Por padrão, existem alguns usuários pré-cadastrados para facilitar a testagem da aplicação.
+Login com Estudante:
+Email -> ester@unb.com
+Password -> asdfg
+Login com Professor:
+Email -> 456@unb.com
+Password -> 123
+
 Ao acessar a aplicação web na página inicial, você normalmente verá opções para "Login" ou "Registrar-se" logo abaixo.
 - Na tela de login, insira seu endereço de e-mail e senha nos campos apropriados. Clique no botão "Entrar" para fazer login na conta que deseja. Se as informações estiverem corretas, você será redirecionado para a página principal.
     
