@@ -70,18 +70,52 @@ def create(turma_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
+@bp.route("<int:exame_id>/check_date", methods=['GET'])
+@login_required
+def check_date(turma_id, exame_id):
+    exame = Exame.query.filter_by(id=exame_id).first()
+
+    # Verificar se o aluno já realizou o exame
+    nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
+    # Obter a data e hora atual
+    data_atual = datetime.now()
+    
+    # Caso 1: Exame com data expirada e o aluno não realizou o exame
+    if exame.data_fim < data_atual and not nota:
+        flash("Atenção: O prazo para realizar este exame já expirou.", category="warning")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+    
+    # Caso 2: Exame com data expirada e o aluno já realizou o exame
+    elif exame.data_fim < data_atual and nota:
+        flash("Você já realizou este exame.", category="info")
+        return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+
+    # Caso 3: Exame com data dentro do prazo e o aluno ainda não realizou o exame
+    elif exame.data_inicio <= data_atual <= exame.data_fim and not nota:
+        return redirect(url_for('turmas.exames.show', turma_id=turma_id, exame_id=exame.id))
+
+    # Caso 4: Exame com data dentro do prazo e o aluno já realizou o exame
+    elif exame.data_inicio <= data_atual <= exame.data_fim and nota:
+        flash("Você já realizou este exame.", category="info")
+        return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+    
+    # Caso 5: Exame agendado (data futura)
+    elif exame.data_inicio > data_atual:
+        flash(f"Este exame está agendado para {exame.data_inicio}. Por favor, aguarde até o dia do exame para realizar a prova.", category="warning")
+        return redirect(url_for('turmas.show', turma_id=turma_id))
+
+    # Caso de erro desconhecido ou situação inválida
+    else:
+        flash("Erro desconhecido ao verificar o exame.", category="error")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+
+    
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
     exame = Exame.query.filter_by(id=exame_id).first()
     questoes_exame = exame.questoes # tabela associativa
-
-    # Verificar se o aluno já realizou o exame
-    nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
-    if nota:
-        flash("Você já realizou este exame.", category="info")
-        return redirect( url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
-
+    
     # Obtendo as opções da questão de múltipla escolha
     for questao_exame in questoes_exame:
         if questao_exame.questao.tipo_questao == "multipla_escolha":
