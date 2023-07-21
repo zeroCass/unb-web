@@ -2,18 +2,18 @@
 <div class="container">
     <div class="mb-3 card">
         <div class="card-header">
-            <a href="{{ url_for('turmas.exames.show', turma_id=turma.id, exame_id=exame.id) }}">
+            <a class="text-decoration-none" href="{{ url_for('turmas.exames.show', turma_id=turma.id, exame_id=exame.id) }}">
                 <h5 class="card-title">{{ exame.nome }}</h5>
-                {% if exame.respondido == True %} 
-                    <p class="card-title">Respondido</p>
-                {% endif %}
             </a>
+            {% if exame.respondido == True %} 
+                <h6 class="card-subtitle mb-2 text-body-secondary">Respondido</h6>
+            {% endif %}
         </div>
         <div class="card-body">
             <p>Data Inicio: {{ exame.data_inicio.strftime("%Y-%m-%d %H:%M") }}</p>
             <p>Data Fim: {{ exame.data_fim.strftime("%Y-%m-%d %H:%M") }}</p>
         </div>
-        <div class="card-footer text-muted">
+        <div class="card-footer">
             {% if user.tipo_usuario == "professor" %} 
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <a class="btn btn-secondary mt-2"
@@ -23,9 +23,9 @@
                 </div>
             {% else %}
                 {% if exame.nota_estudante %}
-                    <p>Nota Final:  {{ exame.nota_estudante }} / {{exame.nota_exame}}</p>
+                    <p class="text-muted">Nota Final:  {{ exame.nota_estudante }} / {{exame.nota_exame}}</p>
                 {% else %}
-                    <p>Nota total Exame: {{exame.nota_exame}}</p>
+                    <p class="fw-bold">Nota total Exame: {{exame.nota_exame}}</p>
                 {% endif %}
             {% endif %}
         </div>
