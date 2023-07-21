@@ -113,12 +113,7 @@ def check_date(turma_id, exame_id):
         flash("Erro desconhecido ao verificar o exame.", category="error")
         return redirect(url_for("turmas.show", turma_id=turma_id))
 
-
-
-
-
-
-    
+ 
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id, exame_id):
@@ -242,3 +237,31 @@ def notas(turma_id, exame_id):
     notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
     exame = Exame.query.filter_by(id=exame_id).first()
     return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame, turma_id=turma_id)
+
+
+@bp.route("<int:exame_id>/delete", methods=['GET'])
+@login_required
+def delete(turma_id, exame_id):
+    exame = Exame.query.get_or_404(exame_id)
+    
+    # # Verificar se existem respostas associadas ao exame
+    # if exame.respostas:
+    #     # Se existirem respostas, não permita a exclusão
+    #     flash("Não é possível excluir o exame porque já foi respondido por estudantes.", category="error")
+    #     return redirect(url_for("turmas.show", turma_id=turma_id))
+    
+    # # Remover as questões associadas ao exame
+    # for questao in exame.questoes:
+    #     db.session.delete(questao)
+
+    # # Remover o exame do banco de dados
+    # with db.session.begin_nested():
+    #     db.session.delete(exame)
+
+    # try:
+    #     db.session.commit()
+    # except Exception as e:
+    #     # Tratar quaisquer erros que possam ocorrer durante a exclusão
+    #     flash(f"Erro ao excluir o exame: {e}", category="error")
+
+    return redirect(url_for("turmas.show", turma_id=turma_id))
