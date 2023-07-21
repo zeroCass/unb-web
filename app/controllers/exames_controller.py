@@ -72,7 +72,7 @@ def create(turma_id):
 
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
-def show(turma_id, exame_id, doing_exam=False):
+def show(turma_id, exame_id):
     # Verificar se o aluno já realizou o exame
     exame = Exame.query.filter_by(id=exame_id).first()
     nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
@@ -83,12 +83,18 @@ def show(turma_id, exame_id, doing_exam=False):
 
     questoes_exame = exame.questoes # tabela associativa
 
+    # cria json com informcaoes do horario de realizacao do exame
+    exame_horario = json.dumps({
+        "dataInicio": exame.data_inicio.strftime("%Y-%m-%d %H:%M:%S"),
+        "dataFim": exame.data_fim.strftime("%Y-%m-%d %H:%M:%S"),
+    })
+
     # Obtendo as opções da questão de múltipla escolha
     for questao_exame in questoes_exame:
         if questao_exame.questao.tipo_questao == "multipla_escolha":
             multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
             questao_exame.questao.opcoes = multipla_escolha
-    return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame, doing_exam=doing_exam)
+    return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame, exame_horario=exame_horario)
 
 
 @bp.route("<int:exame_id>/submit", methods=['POST'])

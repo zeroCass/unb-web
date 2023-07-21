@@ -8,6 +8,9 @@
 {% block content %}
 <div class="container">
     <h4>{{ exame.nome }}</h4>
+    {% if current_user.tipo_usuario == "estudante" %}
+        <h6 id="tempoRestante">Tempo Restante: </h6>
+    {% endif %}
     <div>
         <form method="POST" action="{{ url_for('turmas.exames.submit', turma_id=turma_id, exame_id=exame.id) }}">
             {% for questao_exame in questoes_exame %}
@@ -68,7 +71,13 @@
             {% endif %}
         </form>
     </div>
+
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/exameCountDown.js') }}"></script>
+    <script type="text/javascript">
+        const tipoUsuario = "{{ current_user.tipo_usuario }}"
+        if (tipoUsuario == "estudante")
+            exameCountDown({{ exame_horario|tojson }})
+    </script>
 <body>
-<script>
-</script>
 {% endblock %}
