@@ -80,8 +80,12 @@ def check_date(turma_id, exame_id):
     # Obter a data e hora atual
     data_atual = datetime.now()
     
-    # Verificar se o exame está dentro do prazo de realização
-    if exame.data_inicio <= data_atual <= exame.data_fim:
+    # Verifica se o usuario é o professor
+    if current_user.tipo_usuario == "professor":
+        return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=exame.questoes)
+    
+    # Verifica se o exame está dentro do prazo de realização
+    elif exame.data_inicio <= data_atual <= exame.data_fim:
         if nota:
             flash("Você já realizou este exame. Espere prazo de encerramento do mesmo para vizualizar suas respostas e nota!", category="warning")
             return redirect(url_for("turmas.show", turma_id=turma_id))
