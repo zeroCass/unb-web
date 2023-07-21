@@ -72,22 +72,23 @@ def create(turma_id):
 
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
-def show(turma_id, exame_id):
-    exame = Exame.query.filter_by(id=exame_id).first()
-    questoes_exame = exame.questoes # tabela associativa
-
+def show(turma_id, exame_id, doing_exam=False):
     # Verificar se o aluno já realizou o exame
+    exame = Exame.query.filter_by(id=exame_id).first()
     nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
     if nota:
         flash("Você já realizou este exame.", category="info")
         return redirect( url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+
+
+    questoes_exame = exame.questoes # tabela associativa
 
     # Obtendo as opções da questão de múltipla escolha
     for questao_exame in questoes_exame:
         if questao_exame.questao.tipo_questao == "multipla_escolha":
             multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao_exame.questao.id).all()
             questao_exame.questao.opcoes = multipla_escolha
-    return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
+    return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame, doing_exam=doing_exam)
 
 
 @bp.route("<int:exame_id>/submit", methods=['POST'])
