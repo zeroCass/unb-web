@@ -80,28 +80,29 @@ def check_date(turma_id, exame_id):
     # Obter a data e hora atual
     data_atual = datetime.now()
     
-    # Caso 1: Exame com data expirada e o aluno não realizou o exame
-    if exame.data_fim < data_atual and not nota:
-        flash("Atenção: O prazo para realizar este exame já expirou.", category="warning")
-        return redirect(url_for("turmas.show", turma_id=turma_id))
-    
-    # Caso 2: Exame com data expirada e o aluno já realizou o exame
-    elif exame.data_fim < data_atual and nota:
-        flash("Você já realizou este exame.", category="info")
-        return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+    # Verificar se o exame está dentro do prazo de realização
+    if exame.data_inicio <= data_atual <= exame.data_fim:
+        if nota:
+            flash("Você já realizou este exame. Espere prazo de encerramento do mesmo para vizualizar suas respostas e nota!", category="warning")
+            return redirect(url_for("turmas.show", turma_id=turma_id))
+        else:
+            # Caso o exame esteja dentro do prazo, redirecionar para a página do exame
+            return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=exame.questoes)
 
-    # Caso 3: Exame com data dentro do prazo e o aluno ainda não realizou o exame
-    elif exame.data_inicio <= data_atual <= exame.data_fim and not nota:
-        return redirect(url_for('turmas.exames.show', turma_id=turma_id, exame_id=exame.id))
-
-    # Caso 4: Exame com data dentro do prazo e o aluno já realizou o exame
-    elif exame.data_inicio <= data_atual <= exame.data_fim and nota:
-        flash("Você já realizou este exame.", category="info")
-        return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
-    
-    # Caso 5: Exame agendado (data futura)
+    # Caso o exame já tenha expirado
+    elif exame.data_fim < data_atual:
+        if nota:
+            # Se o aluno já tiver realizado o exame, redirecionar para a página de respostas
+            flash("Você já realizou este exame.", category="info")
+            return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+        else:
+            # Se o aluno não tiver realizado o exame, redirecionar para a página com a nota e respostas indisponíveis
+            flash("Atenção: O prazo para realizar este exame já expirou.", category="warning")
+            return redirect(url_for("turmas.show", turma_id=turma_id))
+        
+    # Exame agendado (data futura)
     elif exame.data_inicio > data_atual:
-        flash(f"Este exame está agendado para {exame.data_inicio}. Por favor, aguarde até o dia do exame para realizar a prova.", category="warning")
+        flash(f"Este exame está agendado para {exame.data_inicio}. Por favor, aguarde para realizar o exame.", category="warning")
         return redirect(url_for('turmas.show', turma_id=turma_id))
 
     # Caso de erro desconhecido ou situação inválida
