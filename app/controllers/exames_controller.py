@@ -81,7 +81,7 @@ def check_date(turma_id, exame_id):
     
     # Verifica se o usuario é o professor
     if current_user.tipo_usuario == "professor":
-        return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=exame.questoes)
+        return show(turma_id, exame_id)
     
     # Verifica se o exame está dentro do prazo de realização
     elif exame.data_inicio <= data_atual <= exame.data_fim:
@@ -90,7 +90,7 @@ def check_date(turma_id, exame_id):
             return redirect(url_for("turmas.show", turma_id=turma_id))
         else:
             # Caso o exame esteja dentro do prazo, redirecionar para a página do exame
-            return render_template("exames/show.jinja2", turma_id=turma_id, exame=exame, questoes_exame=exame.questoes)
+            return show(turma_id, exame_id)
 
     # Caso o exame já tenha expirado
     elif exame.data_fim < data_atual:
