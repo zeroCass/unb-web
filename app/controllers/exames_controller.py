@@ -2,7 +2,7 @@ from ..webapp import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash, json
 from flask_login import login_required, current_user
 from ..models import Turma, Exame, Questao, QuestaoMultiplaEscolha, QuestaoExame, RespostaQuestaoExame, NotasExames, Estudante
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.utils.decorators import load_parent_resource_factory
 import json
 import re
@@ -97,7 +97,7 @@ def check_date(turma_id, exame_id):
         if nota:
             # Se o aluno já tiver realizado o exame, redirecionar para a página de respostas
             flash("Você já realizou este exame.", category="info")
-            return redirect(url_for('turmas.exames.resposta_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=current_user.id))
+            return resposta_exame(turma_id, exame_id, estudante_id=current_user.id)
         else:
             # Se o aluno não tiver realizado o exame, redirecionar para a página com a nota e respostas indisponíveis
             flash("Atenção: O prazo para realizar este exame já expirou.", category="warning")
@@ -144,9 +144,14 @@ def show(turma_id, exame_id):
 @bp.route("<int:exame_id>/submit", methods=['POST'])
 @login_required
 def submit(turma_id, exame_id):
-    print(request.form)
-    nota_exame = 0
+    # verifica se a sumissão é valida
+    exame = Exame.query.filter_by(id=exame_id).first()
+    if not time_is_in_rage(exame.data_inicio, exame.data_fim):
+        flash("Erro ao enviar exame", category="error")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+
     try:
+        nota_exame = 0
         for questao in request.form:
                 questao_id = re.search("\d+$", questao)[0]
                 questao_db = Questao.query.filter_by(id=questao_id).first()
@@ -181,6 +186,18 @@ def submit(turma_id, exame_id):
         print(e)
         flash("Erro ao enviar exame", category="error")
     return redirect(url_for("turmas.show", turma_id=turma_id))
+
+
+def time_is_in_rage(data_inicio, data_fim):
+    """ 
+    pure function 
+    usada para verificar se a data de submit
+    está no rage + 30s
+    return bool
+    """
+    new_data_fim = data_fim + timedelta(seconds=30)
+    return data_inicio <= datetime.now() <= new_data_fim
+
 
 
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])

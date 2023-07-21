@@ -29,6 +29,8 @@
                         {% else %}
                             {% if questao_exame.questao.tipo_questao == "multipla_escolha" %}
                                 <ul class="list-group">
+                                        <input hidden unique-value checked type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
+                                                name="questao_id_{{ questao_exame.questao.id }}" value="">
                                     {% for opcao in questao_exame.questao.opcoes %}
                                         <li class="list-group-item">
                                             <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
