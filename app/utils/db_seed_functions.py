@@ -60,7 +60,7 @@ def seed_respostas_questoes_exames():
 
 
 def seed_notas_exames():
-    for nota_exame in notas_exames:
-        nota = NotasExames(**nota_exame)
+    for nota_exame_estudante in notas_exames:
+        nota = NotasExames(**nota_exame_estudante)
         db.session.add(nota)
     db.session.commit()

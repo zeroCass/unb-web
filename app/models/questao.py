@@ -15,5 +15,5 @@ class Questao(db.Model):
     exames = db.relationship("QuestaoExame", back_populates="questao") # tabela associativa N to N
 
     def __repr__(self) -> str:
-        return f"<Questao ID: {self.id}> Enunciado:{self.enunciado} \
-            Tipo_questao:{self.tipo_questao} Resposta:{self.resposta}"
+        return f"<Questao ID: {self.id}> - Enunciado:{self.enunciado} \
+            - Tipo Questao:{self.tipo_questao} - Resposta:{self.resposta}"

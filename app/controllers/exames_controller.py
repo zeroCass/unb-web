@@ -178,7 +178,7 @@ def submit(turma_id, exame_id):
                 resposta_questao_exame = RespostaQuestaoExame(estudante_id=current_user.id, exame_id=exame_id,
                                             questao_id=questao_id, resposta_estudante=resposta_estudante, nota_estudante_questao=nota_estudante_questao)
                 db.session.add(resposta_questao_exame)
-        notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame=nota_exame)
+        notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame_estudante=nota_exame)
         db.session.add(notas_exames)
         db.session.commit()
         flash("Exame enviado com sucesso!", category="success")

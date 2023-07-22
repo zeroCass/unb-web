@@ -14,5 +14,6 @@ class RespostaQuestaoExame(db.Model):
     questao_id = db.Column(db.Integer, db.ForeignKey('questao.id'), primary_key=True)
 
     def __repr__(self) -> str:
-        return f"<RespostaQuestaoExame> resposta_estudante:{self.resposta_estudante} \
-            nota_estudante_questao:{self.nota_estudante_questao} ExameID:{self.exame_id} estudanteID: {self.estudante_id} QuestaoID: {self.questao_id}"
+        return f"<RespostaQuestaoExame> Resposta Estudante:{self.resposta_estudante} \
+            - Nota Estudante Questao:{self.nota_estudante_questao} - Exame ID:{self.exame_id} \
+            - Estudante ID: {self.estudante_id} - Questao ID: {self.questao_id}"

@@ -19,3 +19,6 @@ class Exame(db.Model):
     # novo relacionamento com tabela associativa - Mateus creation
     questoes = db.relationship("QuestaoExame", back_populates="exame") # N to N
     
+    def __repr__(self) -> str:
+        return f"<Exame {self.id}> Nome:{self.nome} - Data de Início:{self.data_inicio} \
+            - Data de Fim:{self.data_fim} - Nota do Exame:{self.nota_exame}"

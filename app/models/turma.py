@@ -16,7 +16,6 @@ class Turma(db.Model):
     aulas = db.relationship('Aula', backref=db.backref('turma_aulas', lazy=True)) #1 to N
     exames = db.relationship('Exame', backref='turma_exame', lazy=True) #1 to N
 
-    # token_presenca
-
     def __repr__(self) -> str:
-        return "<Turma %r>" % self.id
+        return f"<Turma {self.id}> - Nome:{self.nome} - Horario Inicio:{self.horario_inicio} \
+            - Horario Fim:{self.horario_fim} - Semestre:{self.semestre}"
