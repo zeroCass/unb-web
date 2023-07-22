@@ -12,49 +12,35 @@
         <form>
             {% for questao_exame in questoes_exame %}
                 <div class="mb-3 card">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h5 class="card-title">Questão {{ loop.index }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Valor: {{ questao_exame.nota_questao }}</h6>
                         <p class="card-text">{{ questao_exame.enunciado }}</p>
                     </div>
-                    <div class="card-footer">
-                        {% if questao_exame.tipo_questao == "multipla_escolha" %}
-                            <ul class="list-group">
+                    {% if questao_exame.tipo_questao == "multipla_escolha" %}
+                            <ul class="list-group list-group-flush">
                                 {% for opcao in questao_exame.opcoes %}
-                                    <li class="list-group-item">
-                                        <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.id }}" 
-                                            name="questao_id_{{ questao_exame.id }}" value="A">
-                                            <label class="form-check-label" for="opcao_a_{{ loop.index }}">{{ opcao.opcao_a }}</label>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.id }}" 
-                                            name="questao_id_{{ questao_exame.id }}" value="B">
-                                            <label class="form-check-label" for="opcao_b_{{ loop.index }}">{{ opcao.opcao_b }}</label>
-                                    </li>
+                                    <li class="list-group-item">A. {{ opcao.opcao_a }}</li>
+                                    <li class="list-group-item">B. {{ opcao.opcao_b }}</li>
                                     {% if opcao.opcao_c %}
-                                        <li class="list-group-item">
-                                            <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.id }}"
-                                                 name="questao_id_{{ questao_exame.id }}" value="C">
-                                                <label class="form-check-label" for="opcao_c_{{ loop.index }}">{{ opcao.opcao_c }}</label>
-                                        </li>
+                                    <li class="list-group-item">C. {{ opcao.opcao_c }}</li>
                                     {% endif %}
                                     {% if opcao.opcao_d %}
-                                        <li class="list-group-item">
-                                            <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.id }}"
-                                                name="questao_id_{{ questao_exame.id }}" value="D">
-                                                <label class="form-check-label" for="opcao_d_{{ loop.index }}">{{ opcao.opcao_d }}</label>
-                                        </li>
+                                    <li class="list-group-item">D. {{ opcao.opcao_d }}</li>
                                     {% endif %}
-                            {% endfor %}
+                                {% endfor %}    
                             </ul>
+                    {% endif %}
+                    <ul class="list-group">
+                        <li class="list-group-item">Respota Correta: {{ questao_exame.resposta }}</li>
+                        {% if questao_exame.resposta == questao_exame.resposta_estudante%}
+                            <li class="list-group-item list-group-item-success">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
+                        {% else %}
+                            <li class="list-group-item list-group-item-danger">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
                         {% endif %}
-                    </div>
-                    <div>
-                        <h4>Respota Correta:</h4>
-                        <p>{{ questao_exame.resposta }}</p>
-                        <h4>Respota estudante:</h4>
-                        <p>{{ questao_exame.resposta_estudante }}</p>
-                        <p>Nota estudante: {{ questao_exame.nota_estudante_questao }}</p>
+                    </ul>
+                    <div class="card-footer">
+                            <p>Nota estudante: {{ questao_exame.nota_estudante_questao }}</p>
                     </div>
                 </div>
             {% endfor %}

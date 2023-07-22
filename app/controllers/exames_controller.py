@@ -155,12 +155,7 @@ def check_date(turma_id: int, exame_id: int) -> redirect:
         flash("Erro desconhecido ao verificar o exame.", category="error")
         return redirect(url_for("turmas.show", turma_id=turma_id))
 
-
-
-
-
-
-    
+ 
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
 def show(turma_id: int, exame_id: int) -> render_template:
@@ -265,8 +260,11 @@ def time_is_in_rage(data_inicio: datetime, data_fim: datetime) -> bool:
     return data_inicio <= datetime.now() <= new_data_fim
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> exame_settings
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
 @login_required
 def resposta_exame(turma_id: int, exame_id: int, estudante_id: int) -> redirect:
@@ -335,3 +333,25 @@ def notas(turma_id: int, exame_id: int) -> render_template:
     notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
     exame = Exame.query.filter_by(id=exame_id).first()
     return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame, turma_id=turma_id)
+
+
+@bp.route("<int:exame_id>/delete", methods=['GET'])
+@login_required
+def delete(turma_id, exame_id):
+    exame = Exame.query.get_or_404(exame_id)
+    
+    # Verificar se existem respostas e notas atribuidas a um exame
+    if exame.respostas and exame.notas:
+        # Se existirem, não é permitido a exclusão
+        flash("Não é possível excluir o exame porque já foi respondido por estudantes.", category="error")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+    
+    try:
+        #Se nao tenta fazer a exclusão do exame
+        db.session.delete(exame)
+        db.session.commit()
+        flash("Exame excluido com sucesso.", category="success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erro ao excluir o exame: {e}", category="error")
+    return redirect(url_for("turmas.show", turma_id=turma_id))
