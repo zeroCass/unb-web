@@ -19,28 +19,30 @@
             />
             <label for="data_aula">Data:</label>
         </div>
-        <div class="mb-3">
-            <label for="horario_inicio">Horário de Início:</label>
-            <input 
-                type="text" 
-                id="horario_inicio" 
-                name="horario_inicio" 
-                value="{{ turma.horario_inicio.strftime('%H:%M') }}"
-                readonly
-                class="form-control"
-            />
-        </div>
-        <div class="mb-3">
-            <label for="horario_fim">Horário de Fim:</label>
-            <input 
-                type="text" 
-                id="horario_fim" 
-                name="horario_fim" 
-                value="{{ turma.horario_fim.strftime('%H:%M') }}"
-                readonly
-                class="form-control"
-            />
-        </div>
+        {% block time_fields %}
+            <div class="mb-3">
+                <label for="horario_inicio">Horário de Início:</label>
+                <input 
+                    type="text" 
+                    id="horario_inicio" 
+                    name="horario_inicio" 
+                    value="{{ turma.horario_inicio.strftime('%H:%M') }}"
+                    readonly
+                    class="form-control"
+                />
+            </div>
+            <div class="mb-3">
+                <label for="horario_fim">Horário de Fim:</label>
+                <input 
+                    type="text" 
+                    id="horario_fim" 
+                    name="horario_fim" 
+                    value="{{ turma.horario_fim.strftime('%H:%M') }}"
+                    readonly
+                    class="form-control"
+                />
+            </div>
+        {% endblock %}
         <button type="submit" class="btn btn-secondary">Criar Aula</button>
     </form>
 </div>

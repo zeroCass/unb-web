@@ -23,7 +23,7 @@
                 </div>
             {% else %}
                 {% if exame.nota_estudante %}
-                    <p class="text-muted">Nota Final:  {{ exame.nota_estudante }} / {{exame.nota_exame}}</p>
+                    <p class="text-muted">Nota Final: {{ exame.nota_estudante }} / {{exame.nota_exame}}</p>
                 {% else %}
                     <p class="fw-bold">Nota total Exame: {{exame.nota_exame}}</p>
                 {% endif %}

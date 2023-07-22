@@ -11,22 +11,27 @@
         <div class=" mb-3 form-group">
             <label for="novo_status">Novo Status:</label>
             <select class="form-control" name="novo_status" id="novo_status">
+                {% set agendado_option = 'agendado' %}
+                {% set cancelado_option = 'cancelado' %}
+                {% set finalizado_option = 'finalizado' %}
+
                 {% if data_atual > aula.data_aula %}
-                    <option value="finalizado" {% if aula.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
-                    <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                    <option value="{{ finalizado_option }}" {% if aula.status == finalizado_option %}selected{% endif %}>Finalizado</option>
+                    <option value="{{ cancelado_option }}" {% if aula.status == cancelado_option %}selected{% endif %}>Cancelado</option>
                 {% elif data_atual < aula.data_aula %}
-                    <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
-                    <option value="agendado" {% if aula.status == 'agendado' %}selected{% endif %}>Agendado</option>
+                    <option value="{{ cancelado_option }}" {% if aula.status == cancelado_option %}selected{% endif %}>Cancelado</option>
+                    <option value="{{ agendado_option }}" {% if aula.status == agendado_option %}selected{% endif %}>Agendado</option>
                 {% else %}
+                    {% set em_andamento_option = 'em andamento' %}
                     {% if hora_atual >= turma.horario_inicio and hora_atual < turma.horario_fim %}
-                        <option value="em andamento" {% if aula.status == 'em andamento' %}selected{% endif %}>Em andamento</option>
-                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        <option value="{{ em_andamento_option }}" {% if aula.status == em_andamento_option %}selected{% endif %}>Em andamento</option>
+                        <option value="{{ cancelado_option }}" {% if aula.status == cancelado_option %}selected{% endif %}>Cancelado</option>
                     {% elif hora_atual > turma.horario_inicio and hora_atual >= turma.horario_fim: %}
-                        <option value="finalizado" {% if aula.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
-                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        <option value="{{ finalizado_option }}" {% if aula.status == finalizado_option %}selected{% endif %}>Finalizado</option>
+                        <option value="{{ cancelado_option }}" {% if aula.status == cancelado_option %}selected{% endif %}>Cancelado</option>
                     {% else %}
-                        <option value="cancelado" {% if aula.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
-                        <option value="agendado" {% if aula.status == 'agendado' %}selected{% endif %}>Agendado</option>
+                        <option value="{{ cancelado_option }}" {% if aula.status == cancelado_option %}selected{% endif %}>Cancelado</option>
+                        <option value="{{ agendado_option }}" {% if aula.status == agendado_option %}selected{% endif %}>Agendado</option>
                     {% endif %}
                 {% endif %}
             </select>
