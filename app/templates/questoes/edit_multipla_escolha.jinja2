@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
     <h3>Editar Questão Multipla Escolha (ID: {{ questao_multipla_escolha.id }})</h3>
-    <form method="POST" action="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}">
+    <form method="POST" action="{{ url_for('questoes.edit', professor_id=current_user.id, questao_id=questao_multipla_escolha.id) }}">
         <div class="form-floating mb-3">
             <input
                 class="form-control"

@@ -10,7 +10,15 @@ import re
 bp = Blueprint("exames", __name__)
 parent_model = Turma
 
-def register_blueprint(parent_blueprint: Blueprint):
+
+def register_blueprint(parent_blueprint: Blueprint) -> None:
+    """Registra essa rota (blueprint) como parte
+    da rota do pai. Dessa forma, o rota desse blueprint será
+    composta com a rota do pai como prefixo
+
+    Args:
+        O blueprint do pai
+    """
     parent_blueprint.register_blueprint(
         bp, url_prefix=f"/<int:turma_id>/exames")
 
@@ -20,8 +28,19 @@ load_parent = load_parent_resource_factory(parent_model, "turma_id")
 @bp.route("/new", methods=["GET"])
 @login_required
 @load_parent
-def new(turma: Turma):
+def new(turma: Turma) -> redirect:
+    """Rendereza a pegina de exame passando para o template
+    todas as questoes que o professor possui em seu banco de questões
+
+    Args:
+        turma: instancia da model Turma de acordo com turma_id receibodo da rota
+        e invocado atraves do decorator @load_parent
+    Retunrs:
+        redireciona para a página de criação de exame
+    """
     questoes = Questao.query.filter_by(professor_id=current_user.id).all()
+
+    # transforma questoes em um json para o js acessar
     questoes_json = [{
         "id": questao.id,
         "enunciado": questao.enunciado,
@@ -35,7 +54,16 @@ def new(turma: Turma):
 
 @bp.route("/create", methods=["POST"])
 @login_required
-def create(turma_id):
+def create(turma_id: int) -> redirect:
+    """Cria uma instancia de turma e insere no banco de dados
+    de acordo com os campos do formlario recebido
+
+    Args:
+        turma_id: id da turma que o exame irá estar relacionado 
+    Retunrs:
+        redireciona para a página de turmas
+    """
+
     # converte o dado das questoes escolhidas em json 
     questoes_selecionadas = json.loads(request.form.get("questoes_selecionadas"))
     nome = request.form.get("nome")
@@ -52,7 +80,7 @@ def create(turma_id):
 
     try:
         db.session.add(new_exame)
-        db.session.flush()
+        db.session.flush()  # atualiza 
 
         # adicionar questoes e seus valores na tabela questao_exame (table associativa)
         for questao in questoes_selecionadas:
@@ -72,7 +100,21 @@ def create(turma_id):
 
 @bp.route("<int:exame_id>/check_date", methods=['GET'])
 @login_required
-def check_date(turma_id, exame_id):
+def check_date(turma_id: int, exame_id: int) -> redirect:
+    """Verifica a data e/ou o tipo de usuario e então redireciona-o para uma página 
+    Se for um professor, irá redirecionar para a rota show
+    Se for uma estudante, verifica a data/hora está no prazo do exame
+        Se já estiver dentro do prazo, redireciona para a página de realização do exame
+        Se o exame já expirou, então verifica se o estudante tem nota, se tiver redireciona ele para
+        a pagina de visualização do exame
+        Se o exame já expirou e o aluno não tem nota, então exibe mensagem de erro
+
+    Args:
+        turma_id: id da turma
+        exame_id: id do exame
+    Retunrs:
+        redireciona para páginas diferentes dependendo do usuario, data/hora
+    """
 
     exame = Exame.query.filter_by(id=exame_id).first()
     nota = NotasExames.query.filter_by(estudante_id=current_user.id, exame_id=exame.id).first()
@@ -121,11 +163,20 @@ def check_date(turma_id, exame_id):
     
 @bp.route("<int:exame_id>/show", methods=['GET'])
 @login_required
-def show(turma_id, exame_id):
-    # Verificar se o aluno já realizou o exame
+def show(turma_id: int, exame_id: int) -> render_template:
+    """Renderiza a página de visualização do exame,
+    onde será possivel realizar o exame caso o usuario seja estudante
+
+    Args:
+        turma_id: id da turma
+        exame_id: id do exame
+    Retunrs:
+        redireciona para página de visualização do exame
+    """
+
     exame = Exame.query.filter_by(id=exame_id).first()
 
-    # cria json com informcaoes do horario de realizacao do exame
+    # cria json com informcaoes do horario de realizacao do exame para acessar no js
     exame_horario = json.dumps({
         "dataInicio": exame.data_inicio.strftime("%Y-%m-%d %H:%M:%S"),
         "dataFim": exame.data_fim.strftime("%Y-%m-%d %H:%M:%S"),
@@ -143,9 +194,20 @@ def show(turma_id, exame_id):
 
 @bp.route("<int:exame_id>/submit", methods=['POST'])
 @login_required
-def submit(turma_id, exame_id):
-    # verifica se a sumissão é valida
+def submit(turma_id: int, exame_id: int) -> redirect:
+    """Faz o submit do formulario do exame com as respostas
+    do estudante
+
+    Args:
+        turma_id: id da turma
+        exame_id: id do exame
+    Retunrs:
+        redireciona para páginas diferentes dependendo do usuario, data/hora
+    """
+
+   
     exame = Exame.query.filter_by(id=exame_id).first()
+    # verifica se a sumissão é valida
     if not time_is_in_rage(exame.data_inicio, exame.data_fim):
         flash("Erro ao enviar exame", category="error")
         return redirect(url_for("turmas.show", turma_id=turma_id))
@@ -153,9 +215,8 @@ def submit(turma_id, exame_id):
     try:
         nota_exame = 0
         for questao in request.form:
-                questao_id = re.search("\d+$", questao)[0]
+                questao_id = re.search("\d+$", questao)[0]  # extrai somente os ultimos numeros de uma string
                 questao_db = Questao.query.filter_by(id=questao_id).first()
-                # exame_db = Exame.query.filter_by(id=exame_id).first()
                 questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
                 
                 resposta_estudante =  request.form[questao]
@@ -176,7 +237,8 @@ def submit(turma_id, exame_id):
                 # print(f"questao[{questao_id}]: {questao} - resposta: {request.form[questao]}")
 
                 resposta_questao_exame = RespostaQuestaoExame(estudante_id=current_user.id, exame_id=exame_id,
-                                            questao_id=questao_id, resposta_estudante=resposta_estudante, nota_estudante_questao=nota_estudante_questao)
+                                            questao_id=questao_id, resposta_estudante=resposta_estudante, 
+                                            nota_estudante_questao=nota_estudante_questao)
                 db.session.add(resposta_questao_exame)
         notas_exames = NotasExames(exame_id=exame_id, estudante_id=current_user.id, nota_exame_estudante=nota_exame)
         db.session.add(notas_exames)
@@ -188,27 +250,41 @@ def submit(turma_id, exame_id):
     return redirect(url_for("turmas.show", turma_id=turma_id))
 
 
-def time_is_in_rage(data_inicio, data_fim):
-    """ 
-    pure function 
-    usada para verificar se a data de submit
-    está no rage + 30s
-    return bool
+def time_is_in_rage(data_inicio: datetime, data_fim: datetime) -> bool:
+    """  pure function usada para verificar se a data de submit
+    está no range + 30s
+    
+    Args: 
+        data_inicio: data de inicio do exame
+        data_fim: data de fim do exame
+        
+    Retuns:
+        Boolean indicando se a data atual está no range
     """
     new_data_fim = data_fim + timedelta(seconds=30)
     return data_inicio <= datetime.now() <= new_data_fim
 
 
 
+
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
 @login_required
-def resposta_exame(turma_id, exame_id, estudante_id):
+def resposta_exame(turma_id: int, exame_id: int, estudante_id: int) -> redirect:
+    """ Consulta os dados de exame para passar para o template
+    montar o exame com as respostas do estudante
+    
+    Args: 
+        turma_id: id da turma
+        exame_id: id do exame
+        estudante_id: id do estudante
+        
+    Retuns:
+        Redireciona para a página do exame contendo as resposta do estudante
+    """
+
     try:
         exame = Exame.query.filter_by(id=exame_id).first()
         questoes_exame = [] # tabela associativa
-        # REFATORAR ISSO AQUI (CODIGO DUPLICADO DE SHOW)
-        # Obtendo as opções da questão de múltipla escolha
-        
 
         for questao_exame in  exame.questoes:
             questao = questao_exame.questao
@@ -218,7 +294,8 @@ def resposta_exame(turma_id, exame_id, estudante_id):
                 multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao.id).all()
                 questao.opcoes = multipla_escolha
 
-            resposta_questao_exame = RespostaQuestaoExame.query.filter_by(estudante_id=estudante_id,exame_id=exame_id, questao_id=questao.id).first()
+            resposta_questao_exame = RespostaQuestaoExame.query.filter_by(
+                estudante_id=estudante_id,exame_id=exame_id, questao_id=questao.id).first()
             
             questao.resposta_estudante = resposta_questao_exame.resposta_estudante
             questao.nota_estudante_questao = resposta_questao_exame.nota_estudante_questao
@@ -238,7 +315,23 @@ def resposta_exame(turma_id, exame_id, estudante_id):
 
 @bp.route("<int:exame_id>/notas", methods=['GET'])
 @login_required
-def notas(turma_id, exame_id):
+def notas(turma_id: int, exame_id: int) -> render_template:
+    """ Consulta as notas de todos os estudantes que realizaram um
+    determinado exame
+    
+    Args: 
+        turma_id: id da turma
+        exame_id: id do exame
+        
+    Retuns:
+        Redireciona para a página de notas
+    """
+
+    # preveni o estudante de acessar a rota
+    if current_user.tipo_usuario == "estudante":
+        flash("Você não tem permissão realizar esta operação")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
+
     notas_exame = db.session.query(NotasExames, Estudante).join(Estudante).filter(NotasExames.exame_id == exame_id).all()
     exame = Exame.query.filter_by(id=exame_id).first()
     return render_template("exames/notas_exame.jinja2", notas_exame=notas_exame, exame=exame, turma_id=turma_id)

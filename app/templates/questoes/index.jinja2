@@ -21,7 +21,7 @@
                             <p>Resposta: {{ questao.resposta }}</p>
                         </div>
                         <div class="card-footer">
-                            <a href="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{{ url_for('questoes.edit', professor_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
                             <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao.id }}">Excluir</a>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                         <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
                     </div>
                     <div class="card-footer">
-                        <a href="{{ url_for('questoes.edit_multipla_escolha', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                        <a href="{{ url_for('questoes.edit_multipla_escolha', professor_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
                         <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao_multipla_escolha.id }}">Excluir</a>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
     </div>
     
     <div class="position-fixed bottom-0 end-0 p-3">
-        <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
+        <a href="{{ url_for('questoes.new', professor_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
                     {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>
         </a>
     </div>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <form method="POST" action="{{ url_for('questoes.delete', user_id=current_user.id, questao_id=questao.id) }}">
+                        <form method="POST" action="{{ url_for('questoes.delete', professor_id=current_user.id, questao_id=questao.id) }}">
                             <button type="submit" class="btn btn-danger">Excluir</button>
                         </form>
                     </div>
