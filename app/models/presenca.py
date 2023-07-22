@@ -9,3 +9,7 @@ class Presenca(db.Model):
     data = db.Column(db.DateTime, nullable=True)
     estudante_id = db.Column(db.Integer, db.ForeignKey(
         'usuario.id'), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"<Presenca {self.id}> - Aula ID:{self.aula_id} - Data:{self.data} \
+            - Estudante ID:{self.estudante_id}"

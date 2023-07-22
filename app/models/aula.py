@@ -1,8 +1,6 @@
 from . import db
 from sqlalchemy import Enum
 import secrets
-
-
 class Aula(db.Model):
     __tablename__ = "aula"
 
@@ -24,4 +22,5 @@ class Aula(db.Model):
         self.token = secrets.token_urlsafe(16)
 
     def __repr__(self) -> str:
-        return "<Aula %r>" % self.id
+        return f"<Aula {self.id}> - Turma Id:{self.turma_id} - Data Aula:{self.data_aula} \
+            - Status:{self.status} - Token:{self.token}"

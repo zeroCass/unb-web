@@ -82,7 +82,7 @@ def show(turma_id):
             nota_exame = NotasExames.query.filter_by(exame_id=exame.id, estudante_id=current_user.id).first()
             if nota_exame:
                 exame.respondido = True
-                exame.nota_estudante = nota_exame.nota_exame
+                exame.nota_estudante = nota_exame.nota_exame_estudante
     
     return render_template("turmas/show.jinja2", turma=turma, aulas=aulas, exames=exames, user=current_user)
 

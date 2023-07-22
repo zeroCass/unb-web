@@ -115,16 +115,16 @@ exames = [
         "turma_id": "1",
     },
     {   # exame em aberto e não respondidos
-        "data_inicio": datetime.strptime("2023-07-17T16:00", "%Y-%m-%dT%H:%M"),
-        "data_fim": datetime.strptime("2023-07-19T16:00", "%Y-%m-%dT%H:%M"),
+        "data_inicio": datetime.strptime("2023-07-22T16:00", "%Y-%m-%dT%H:%M"),
+        "data_fim": datetime.strptime("2023-08-09T16:00", "%Y-%m-%dT%H:%M"),
         "nome": "Prova 4",
         "nota_exame": "10",
         "professor_id": "1",
         "turma_id": "1",
     },
     {   # exame em aberto e respondidos
-        "data_inicio": datetime.strptime("2023-05-15T16:00", "%Y-%m-%dT%H:%M"),
-        "data_fim": datetime.strptime("2023-07-17T16:00", "%Y-%m-%dT%H:%M"),
+        "data_inicio": datetime.strptime("2023-07-21T16:00", "%Y-%m-%dT%H:%M"),
+        "data_fim": datetime.strptime("2023-07-29T16:00", "%Y-%m-%dT%H:%M"),
         "nome": "Prova 5",
         "nota_exame": "10",
         "professor_id": "1",
@@ -220,11 +220,11 @@ notas_exames = [
     {
         "exame_id": "2",
         "estudante_id": "4",
-        "nota_exame": "4.5"
+        "nota_exame_estudante": "4.5"
     },
     {
         "exame_id": "5",
         "estudante_id": "4",
-        "nota_exame": "10"
+        "nota_exame_estudante": "10"
     }
 ]
