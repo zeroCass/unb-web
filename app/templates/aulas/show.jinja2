@@ -7,42 +7,29 @@
             <p>Horario: {{ turma.horario_inicio.strftime('%H:%M') }} ate {{ turma.horario_fim.strftime('%H:%M') }}</p>
         </div>    
         <div class="card-footer">
-                {% if user.tipo_usuario == "estudante" and aula.status == "em andamento" %}
-                    <div class="d-grid gap-2 col-6 mx-auto">
-                        <form method="GET" action="{{ url_for('turmas.aulas.presenca.registrar_presenca', turma_id=turma.id, aula_id=aula.id) }}">
-                            <button class="btn btn-primary" type="submit">Assinar Chamada</button>
-                        </form>
+            {% if user.tipo_usuario == "estudante" and aula.status == "em andamento" %}
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <form method="GET" action="{{ url_for('turmas.aulas.presenca.registrar_presenca', turma_id=turma.id, aula_id=aula.id) }}">
+                        <button class="btn btn-primary" type="submit">Assinar Chamada</button>
+                    </form>
+                </div>
+            {% elif user.tipo_usuario == "professor" %}
+                <div class="mb-2">
+                    <div class="btn-group">
+                        <a class="btn btn-primary" href="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id) }}">Editar</a>
+                        <a class="btn btn-primary" href="{{ url_for('turmas.aulas.presenca.listar_presencas', turma_id=turma.id, aula_id=aula.id) }}">Acompanhar</a>
                     </div>
-                {% elif user.tipo_usuario == "professor" %}
-                    <div class="mb-2">
-                        <div class="btn-group">
-                            <a class="btn btn-primary" href="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id) }}">Editar</a>
-                            <a class="btn btn-primary" href="{{ url_for('turmas.aulas.presenca.listar_presencas', turma_id=turma.id, aula_id=aula.id) }}">Acompanhar</a>
+                       {% if aula.status == "em andamento" %}
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a class="btn btn-secondary mt-2"
+                            href="{{ url_for('turmas.aulas.presenca.qrcode_page', turma_id=aula.turma_id, aula_id=aula.id) }}">
+                                Qrcode
+                            </a>
                         </div>
-                        {% if aula.status == "em andamento" %}
-                            <div class="d-grid gap-2 col-6 mx-auto">
-                                <a class="btn btn-secondary mt-2"
-                                href="{{ url_for('turmas.aulas.presenca.qrcode_page', turma_id=aula.turma_id, aula_id=aula.id) }}">
-                                    Qrcode
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
-    {# <div class="modal fade" id="qrcode-modal">
-        <div class="modal-dialog modal-dialog-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5>Qrcode da Aula</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <img src="{{ url_for('turmas.aulas.presenca.qrcode', turma_id=aula.turma_id, aula_id=aula.id) }}">
-                </div>
-            </div>        <div class="d-flex card">
-        </div>
-    </div> #}
 </div>
 {% endblock %}
