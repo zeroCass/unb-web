@@ -116,7 +116,7 @@ def edit(professor_id: int, questao_id: int) -> Union[redirect,render_template]:
             db.session.rollback()
             flash("Erro ao atualizar Questao", category="warning")
         return redirect(url_for('questoes.index', professor_id=professor_id))
-    return render_template("questoes/edit.jinja2", questao=questao)
+    return render_template("questoes/edit.jinja2", professor_id=professor_id, questao=questao)
         
     
 @bp.route("/professor/<int:professor_id>/edit/multipla_escolha/<int:questao_id>", methods=['GET', 'POST'])
@@ -159,7 +159,7 @@ def edit_multipla_escolha(professor_id: int, questao_id: int) -> Union[redirect,
             flash("Erro ao atualizar Questao", category="warning")
         
         return redirect(url_for('questoes.index', professor_id=professor_id))
-    return render_template("questoes/edit_multipla_escolha.jinja2", questao_multipla_escolha=questao_multipla_escolha)
+    return render_template("questoes/edit_multipla_escolha.jinja2", professor_id=professor_id, questao_multipla_escolha=questao_multipla_escolha)
 
 @bp.route("/professor/<int:professor_id>/delete/<int:questao_id>", methods=['POST'])
 @login_required

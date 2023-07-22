@@ -33,27 +33,35 @@
                                                 name="questao_id_{{ questao_exame.questao.id }}" value="">
                                     {% for opcao in questao_exame.questao.opcoes %}
                                         <li class="list-group-item">
-                                            <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
-                                                name="questao_id_{{ questao_exame.questao.id }}" value="A">
-                                                <label class="form-check-label" for="opcao_a_{{ loop.index }}">{{ opcao.opcao_a }}</label>
+                                            <p>A. 
+                                                <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
+                                                    name="questao_id_{{ questao_exame.questao.id }}" value="A">
+                                                    <label class="form-check-label" for="opcao_a_{{ loop.index }}">{{ opcao.opcao_a }}</label>
+                                            </p>
                                         </li>
                                         <li class="list-group-item">
-                                            <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
-                                                name="questao_id_{{ questao_exame.questao.id }}" value="B">
-                                                <label class="form-check-label" for="opcao_b_{{ loop.index }}">{{ opcao.opcao_b }}</label>
+                                            <p>B. 
+                                                <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}" 
+                                                    name="questao_id_{{ questao_exame.questao.id }}" value="B">
+                                                    <label class="form-check-label" for="opcao_b_{{ loop.index }}">{{ opcao.opcao_b }}</label>
+                                            </p>
                                         </li>
                                         {% if opcao.opcao_c %}
                                             <li class="list-group-item">
-                                                <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}"
-                                                    name="questao_id_{{ questao_exame.questao.id }}" value="C">
-                                                    <label class="form-check-label" for="opcao_c_{{ loop.index }}">{{ opcao.opcao_c }}</label>
+                                                <p>C. 
+                                                    <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}"
+                                                        name="questao_id_{{ questao_exame.questao.id }}" value="C">
+                                                        <label class="form-check-label" for="opcao_c_{{ loop.index }}">{{ opcao.opcao_c }}</label>
+                                                </p>
                                             </li>
                                         {% endif %}
                                         {% if opcao.opcao_d %}
                                             <li class="list-group-item">
-                                                <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}"
-                                                    name="questao_id_{{ questao_exame.questao.id }}" value="D">
-                                                    <label class="form-check-label" for="opcao_d_{{ loop.index }}">{{ opcao.opcao_d }}</label>
+                                                <p>D. 
+                                                    <input unique-value class="form-check-input me-1" type="radio" id="questao_id_{{ questao_exame.questao.id }}"
+                                                        name="questao_id_{{ questao_exame.questao.id }}" value="D">
+                                                        <label class="form-check-label" for="opcao_d_{{ loop.index }}">{{ opcao.opcao_d }}</label>
+                                                </p>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
