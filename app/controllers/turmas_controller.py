@@ -88,6 +88,7 @@ def show(turma_id: int) -> Union[redirect,render_template]:
     if current_user.tipo_usuario == "estudante":
         for exame in exames:
             nota_exame = NotasExames.query.filter_by(exame_id=exame.id, estudante_id=current_user.id).first()
+            print(nota_exame)
             if nota_exame:
                 exame.respondido = True
                 exame.nota_estudante = nota_exame.nota_exame_estudante
