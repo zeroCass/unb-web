@@ -260,11 +260,6 @@ def time_is_in_rage(data_inicio: datetime, data_fim: datetime) -> bool:
     return data_inicio <= datetime.now() <= new_data_fim
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> exame_settings
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
 @login_required
 def resposta_exame(turma_id: int, exame_id: int, estudante_id: int) -> redirect:

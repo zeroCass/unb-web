@@ -21,15 +21,10 @@
                             <p>Resposta: {{ questao.resposta }}</p>
                         </div>
                         <div class="card-footer">
-<<<<<<< HEAD
-                            <a href="{{ url_for('questoes.edit', professor_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
-                            <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao.id }}">Excluir</a>
-=======
                             <div class="btn-group mt-2 d-flex justify-content-center">
-                                <a href="{{ url_for('questoes.edit', user_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                                <a href="{{ url_for('questoes.edit', professor_id=current_user.id, questao_id=questao.id) }}" class="btn btn-sm btn-primary">Editar</a>
                                 <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao.id }}">Excluir</a>
                             </div>
->>>>>>> exame_settings
                         </div>
                     </div>
                 </div>
@@ -54,15 +49,10 @@
                         <p>Resposta: {{ questao_multipla_escolha.resposta }}</p>
                     </div>
                     <div class="card-footer">
-<<<<<<< HEAD
-                        <a href="{{ url_for('questoes.edit_multipla_escolha', professor_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
-                        <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao_multipla_escolha.id }}">Excluir</a>
-=======
                         <div class="btn-group mt-2 d-flex justify-content-center">
-                            <a href="{{ url_for('questoes.edit_multipla_escolha', user_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{{ url_for('questoes.edit_multipla_escolha', professor_id=current_user.id, questao_id=questao_multipla_escolha.id) }}" class="btn btn-sm btn-primary">Editar</a>
                             <a class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ questao_multipla_escolha.id }}">Excluir</a>
                         </div>
->>>>>>> exame_settings
                     </div>
                 </div>
             </div>
@@ -70,13 +60,8 @@
     </div>
     
     <div class="position-fixed bottom-0 end-0 p-3">
-<<<<<<< HEAD
         <a href="{{ url_for('questoes.new', professor_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
-                    {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Questão</span>
-=======
-        <a href="{{ url_for('questoes.new', user_id=current_user.id) }}" class="btn btn-floating btn-lg btn-primary">
                     {{render_icon('plus-circle') }} <span class="d-none d-xl-inline">Criar Questão</span>
->>>>>>> exame_settings
         </a>
     </div>
     
