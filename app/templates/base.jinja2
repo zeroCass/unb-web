@@ -37,7 +37,7 @@
                             {{ render_nav_item("index.index", "Home") }}
                             {{ render_nav_item("turmas.index", "Turmas") }}
                             {% if current_user.tipo_usuario == "professor" %}
-                                {{ render_nav_item("questoes.index", "Questoes", user_id=current_user.id) }}
+                                {{ render_nav_item("questoes.index", "Questoes", professor_id=current_user.id) }}
                             {% endif %}
                             {{ render_nav_item("auth.logout", "Sair") }}
                         </ul>
