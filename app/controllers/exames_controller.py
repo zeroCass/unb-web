@@ -194,7 +194,6 @@ def time_is_in_rage(data_inicio, data_fim):
     return data_inicio <= datetime.now() <= new_data_fim
 
 
-
 @bp.route("<int:exame_id>/resposta/<int:estudante_id>", methods=['GET'])
 @login_required
 def resposta_exame(turma_id, exame_id, estudante_id):
@@ -244,24 +243,18 @@ def notas(turma_id, exame_id):
 def delete(turma_id, exame_id):
     exame = Exame.query.get_or_404(exame_id)
     
-    # # Verificar se existem respostas associadas ao exame
-    # if exame.respostas:
-    #     # Se existirem respostas, não permita a exclusão
-    #     flash("Não é possível excluir o exame porque já foi respondido por estudantes.", category="error")
-    #     return redirect(url_for("turmas.show", turma_id=turma_id))
+    # Verificar se existem respostas e notas atribuidas a um exame
+    if exame.respostas and exame.notas:
+        # Se existirem, não é permitido a exclusão
+        flash("Não é possível excluir o exame porque já foi respondido por estudantes.", category="error")
+        return redirect(url_for("turmas.show", turma_id=turma_id))
     
-    # # Remover as questões associadas ao exame
-    # for questao in exame.questoes:
-    #     db.session.delete(questao)
-
-    # # Remover o exame do banco de dados
-    # with db.session.begin_nested():
-    #     db.session.delete(exame)
-
-    # try:
-    #     db.session.commit()
-    # except Exception as e:
-    #     # Tratar quaisquer erros que possam ocorrer durante a exclusão
-    #     flash(f"Erro ao excluir o exame: {e}", category="error")
-
+    try:
+        #Se nao tenta fazer a exclusão do exame
+        db.session.delete(exame)
+        db.session.commit()
+        flash("Exame excluido com sucesso.", category="success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erro ao excluir o exame: {e}", category="error")
     return redirect(url_for("turmas.show", turma_id=turma_id))

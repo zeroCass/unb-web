@@ -17,7 +17,7 @@ class Exame(db.Model):
     notas = db.relationship('NotasExames', backref='exame_notas') #1 to N
     respostas = db.relationship('RespostaQuestaoExame', backref='exame_respostas') #1 to N
     # novo relacionamento com tabela associativa - Mateus creation
-    questoes = db.relationship("QuestaoExame", back_populates="exame") # N to N
+    questoes = db.relationship("QuestaoExame", back_populates="exame", cascade="all, delete-orphan") # N to N
     
     def __repr__(self) -> str:
         return f"<Exame {self.id}> Nome:{self.nome} - Data de Início:{self.data_inicio} \

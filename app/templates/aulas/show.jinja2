@@ -15,7 +15,7 @@
                 </div>
             {% elif user.tipo_usuario == "professor" %}
                 <div class="mb-2">
-                    <div class="btn-group">
+                    <div class="btn-group mt-2 d-flex justify-content-center">
                         <a class="btn btn-primary" href="{{ url_for('turmas.aulas.edit', turma_id=turma.id, aula_id=aula.id) }}">Editar</a>
                         <a class="btn btn-primary" href="{{ url_for('turmas.aulas.presenca.listar_presencas', turma_id=turma.id, aula_id=aula.id) }}">Acompanhar</a>
                     </div>

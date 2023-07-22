@@ -29,10 +29,10 @@
     {% if user.tipo_usuario == "professor" %}
             <div class="position-fixed bottom-0 end-0 p-3">
                 <a href="{{ url_for('turmas.aulas.new', turma_id=turma.id) }}" class="btn btn-floating btn-lg btn-primary">
-                    {{render_icon('plus') }} <span class="d-none d-xl-inline">Adicionar Aula</span>
+                    {{render_icon('calendar-plus') }} <span class="d-none d-xl-inline">Agendar Aula</span>
                 </a>
                 <a href="{{ url_for('turmas.exames.new', turma_id=turma.id) }}" class="btn btn-floating btn-lg btn-primary">
-                    {{render_icon('plus') }} <span class="d-none d-xl-inline">Criar Exame</span>
+                    {{render_icon('plus-square') }} <span class="d-none d-xl-inline">Criar Exame</span>
                 </a>
             </div>
     {% endif %}
