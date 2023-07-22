@@ -42,7 +42,7 @@ def create_app():
     # others bp
     from .controllers import blueprints
     for bp in blueprints():
-        print(bp, bp.name)
+        # print(bp, bp.name)
         app.register_blueprint(bp, url_prefix=f"/{bp.name}")
 
     # login manager

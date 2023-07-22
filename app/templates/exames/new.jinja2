@@ -215,9 +215,17 @@
     // handle form submition
     const form = document.querySelector("form")
     form.addEventListener("submit", (e) => {
+        
+
         if (questoesSelecionadas.length ===  0) {
             e.preventDefault()
             alert("O exame deve ter ao menos uma questao!")
+            return
+        }
+
+        if (parseFloat(document.getElementById("notaExame").value) == 0) {
+            e.preventDefault()
+            alert("O exame não pode ter nota 0!")
             return
         }
 
