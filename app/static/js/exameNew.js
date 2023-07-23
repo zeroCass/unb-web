@@ -1,11 +1,4 @@
 function exameNew(questoes_json) {
-	const validNumber = value => {
-		const regex = new RegExp(/^[0-9]+([.][0-9]+)?/)
-		const match = value.match(regex)
-		console.log(match)
-		return match ? parseFloat(match[0]) : 0.0
-	}
-
 	const addQuestaoElementToHTML = questao => {
 		console.log(questoesSelecionadas)
 		const novoElemeto = document.createElement("li")
@@ -19,7 +12,7 @@ function exameNew(questoes_json) {
                             type="text" 
                             name="questao_nota_${questao.id}" 
                             pattern="[0-9]+([.][0-9]+)?"
-                            onblur="this.value=validNumber(this.value)"
+                            onblur="this.value=validInputNumber(this.value)"
                             required
                             current-value="0"
                             value="0"
@@ -54,7 +47,7 @@ function exameNew(questoes_json) {
 		notaInput.addEventListener("input", () => {
 			const currentNota = parseFloat(notaInput.getAttribute("current-value"))
 			let notaExameValor = parseFloat(notaExame.value)
-			let novaNota = validNumber(notaInput.value)
+			let novaNota = validInputNumber(notaInput.value)
 
 			// subtrai o valor atual para atualizar o total
 			notaExameValor -= currentNota

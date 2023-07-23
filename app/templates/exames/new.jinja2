@@ -82,7 +82,9 @@
     </form>
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/exameNew.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/validInputNumber.js') }}"></script>
 <script type="text/javascript">
     exameNew({{ questoes_json }})
+
 </script>
 {% endblock %}
