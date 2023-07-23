@@ -374,6 +374,12 @@ def editar_questao_exame(turma_id: int, exame_id: int, estudante_id: int, questa
         Redireciona para a página de exame com as respostas atualizadas
     """
     try:
+        exame = Exame.query.get(exame_id)
+
+        if exame.data_fim >= datetime.now():
+            flash("Não foi possivel aplicas as alterações pois o tempo de realização do exame ainda não expirou.", category="error")
+            return redirect(url_for("turmas.exames.resposta_exame", turma_id=turma_id, exame_id=exame_id, estudante_id=estudante_id))
+
         nova_nota_estudante = float(request.form['nota_estudante'])
         questao_anulada = request.form['questao_anulada']
 
