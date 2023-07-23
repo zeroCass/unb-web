@@ -284,6 +284,9 @@ def resposta_exame(turma_id: int, exame_id: int, estudante_id: int) -> redirect:
         for questao_exame in  exame.questoes:
             questao = questao_exame.questao
             questao.nota_questao = questao_exame.nota_questao # atribui nota ao objeto
+            questao.anulada = questao_exame.anulada
+            
+            print(f"Questao: {questao}")
 
             if questao_exame.questao.tipo_questao == "multipla_escolha":
                 multipla_escolha = QuestaoMultiplaEscolha.query.filter_by(id=questao.id).all()
@@ -300,8 +303,9 @@ def resposta_exame(turma_id: int, exame_id: int, estudante_id: int) -> redirect:
         #     print(f"id:{questao.id} enunciado {questao.enunciado} \
         #             nota_questao: {questao.nota_questao} nota_estudante: {questao.nota_estudante_questao} \
         #             resposta: {questao.resposta} resposta_estudante: {questao.resposta_estudante}")
-
-        return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
+        
+        return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, estudante_id=estudante_id, questoes_exame=questoes_exame)
+        # return render_template("exames/resposta_exame.jinja2", turma_id=turma_id, exame=exame, questoes_exame=questoes_exame)
     except Exception as e:
         print(e)
         flash(f"Error: {e}", category="error")
@@ -334,7 +338,7 @@ def notas(turma_id: int, exame_id: int) -> render_template:
 
 @bp.route("<int:exame_id>/delete", methods=['GET'])
 @login_required
-def delete(turma_id, exame_id):
+def delete(turma_id: int, exame_id: int):
     exame = Exame.query.get_or_404(exame_id)
     
     # Verificar se existem respostas e notas atribuidas a um exame
@@ -352,3 +356,48 @@ def delete(turma_id, exame_id):
         db.session.rollback()
         flash(f"Erro ao excluir o exame: {e}", category="error")
     return redirect(url_for("turmas.show", turma_id=turma_id))
+
+
+@bp.route("<int:exame_id>/editar_nota_estudante/<int:estudante_id>/questao/<int:questao_id>", methods=['POST'])
+@login_required
+def editar_questao_exame(turma_id: int, exame_id: int, estudante_id: int, questao_id: int) -> redirect:
+    """ Edita a nota do estuante em uma questao ed um exame especifico,
+        ou anula uma questao com base as informações submetidas pelo formulário no modal
+    
+    Args:
+        turma_id: id da turma
+        exame_id: id do exame
+        estudante_id: id do estudante
+        questao_id: id da questão no exame
+        
+    Returns:
+        Redireciona para a página de exame com as respostas atualizadas
+    """
+    try:
+        nova_nota_estudante = float(request.form['nota_estudante'])
+        questao_anulada = request.form['questao_anulada']
+
+        questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
+        # Recupera a resposta da questão a ser editada
+        resposta_questao_exame = RespostaQuestaoExame.query.filter_by(
+            estudante_id=estudante_id, exame_id=exame_id, questao_id=questao_id).first()
+
+        # Atualiza os valores com as informações do formulário
+        if questao_anulada == "True":
+            resposta_questao_exame.nota_estudante_questao = questao_exame.nota_questao
+            questao_exame.anulada = True
+        else:
+            resposta_questao_exame.nota_estudante_questao = nova_nota_estudante
+            questao_exame.anulada = False
+
+        # Salva as alterações no banco de dados
+        db.session.commit()
+
+        flash("Alterações feitas com sucesso!", category="success")
+
+    except Exception as e:
+        print(e)
+        flash(f"Erro ao editar questão: {e}", category="error")
+
+    # Redireciona para a página de exame
+    return redirect(url_for("turmas.exames.resposta_exame", turma_id=turma_id, exame_id=exame_id, estudante_id=estudante_id))

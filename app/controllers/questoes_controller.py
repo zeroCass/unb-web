@@ -43,7 +43,6 @@ def new(professor_id: int) -> render_template:
     return render_template("questoes/new.jinja2", professor_id=professor_id)
 
 
-
 @bp.route("/professor/<int:professor_id>/create", methods=["POST"])
 @login_required
 def create(professor_id: int) -> redirect:
@@ -160,6 +159,7 @@ def edit_multipla_escolha(professor_id: int, questao_id: int) -> Union[redirect,
         
         return redirect(url_for('questoes.index', professor_id=professor_id))
     return render_template("questoes/edit_multipla_escolha.jinja2", professor_id=professor_id, questao_multipla_escolha=questao_multipla_escolha)
+
 
 @bp.route("/professor/<int:professor_id>/delete/<int:questao_id>", methods=['POST'])
 @login_required

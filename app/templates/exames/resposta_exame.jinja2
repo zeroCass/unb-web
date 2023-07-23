@@ -9,45 +9,84 @@
 <div class="container">
     <h4>{{ exame.nome }}</h4>
     <div>
-        <form>
-            {% for questao_exame in questoes_exame %}
-                <div class="mb-3 card">
-                    <div class="card-header">
-                        <h5 class="card-title">Questão {{ loop.index }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Valor: {{ questao_exame.nota_questao }}</h6>
-                        <p class="card-text">{{ questao_exame.enunciado }}</p>
-                    </div>
-                    {% if questao_exame.tipo_questao == "multipla_escolha" %}
-                            <ul class="list-group list-group-flush">
-                                {% for opcao in questao_exame.opcoes %}
-                                    <li class="list-group-item">A. {{ opcao.opcao_a }}</li>
-                                    <li class="list-group-item">B. {{ opcao.opcao_b }}</li>
-                                    {% if opcao.opcao_c %}
+        {% for questao_exame in questoes_exame %}
+            <div class="mb-3 card">
+                <div class="card-header">
+                    <h5 class="card-title">Questão {{ loop.index }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Valor: {{ questao_exame.nota_questao }}</h6>  
+                    <p class="card-text">{{ questao_exame.enunciado }}</p>
+                </div>
+                {% if questao_exame.tipo_questao == "multipla_escolha" %}
+                        <ul class="list-group list-group-flush">
+                            {% for opcao in questao_exame.opcoes %}
+                                <li class="list-group-item">A. {{ opcao.opcao_a }}</li>
+                                <li class="list-group-item">B. {{ opcao.opcao_b }}</li>
+                                {% if opcao.opcao_c %}
                                     <li class="list-group-item">C. {{ opcao.opcao_c }}</li>
-                                    {% endif %}
-                                    {% if opcao.opcao_d %}
+                                {% endif %}
+                                {% if opcao.opcao_d %}
                                     <li class="list-group-item">D. {{ opcao.opcao_d }}</li>
-                                    {% endif %}
-                                {% endfor %}    
-                            </ul>
+                                {% endif %}
+                            {% endfor %}    
+                        </ul>
+                {% endif %}
+                <ul class="list-group">
+                    <li class="list-group-item">Respota Correta: {{ questao_exame.resposta }}</li>
+                    {% if questao_exame.resposta == questao_exame.resposta_estudante%}
+                        <li class="list-group-item list-group-item-success">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
+                    {% elif questao_exame.anulada or questao_exame.tipo_questao == "dissertativa" %}
+                        <li class="list-group-item list-group-item-secondary">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
+                    {% else %}
+                        <li class="list-group-item list-group-item-danger">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
                     {% endif %}
-                    <ul class="list-group">
-                        <li class="list-group-item">Respota Correta: {{ questao_exame.resposta }}</li>
-                        {% if questao_exame.resposta == questao_exame.resposta_estudante%}
-                            <li class="list-group-item list-group-item-success">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
-                        {% else %}
-                            <li class="list-group-item list-group-item-danger">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
-                        {% endif %}
-                    </ul>
-                    <div class="card-footer">
-                            <p>Nota estudante: {{ questao_exame.nota_estudante_questao }}</p>
+                </ul>
+                <div class="card-footer">
+                    {% if questao_exame.anulada %}
+                        <p>Nota estudante: {{ questao_exame.nota_estudante_questao }} / <strong>Questão Anulada</strong> </p>
+                    {% else %}
+                        <p>Nota estudante: {{ questao_exame.nota_estudante_questao }}</p>
+                    {% endif %}
+                    
+                    {% if current_user.tipo_usuario == "professor" %}
+                        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarExameModal-{{ loop.index }}">Editar</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="modal fade" id="editarExameModal-{{ loop.index }}" tabindex="-1" aria-labelledby="editarExameModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex justify-content-center">
+                            <h5 class="modal-title" id="editarExameModalLabel">Editar Questão {{ loop.index }}</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{url_for('turmas.exames.editar_questao_exame', turma_id=turma_id, exame_id=exame.id, estudante_id=estudante_id, questao_id=questao_exame.id) }}">
+                                <div class="mb-3">
+                                    <label for="notaEstudante" class="form-label">Nota Estudante:</label>
+                                    <input type="number" class="form-control" id="notaEstudante" name="nota_estudante" 
+                                        value="{{ questao_exame.nota_estudante_questao }}" step="0.01" min="0" max="{{ questao_exame.nota_questao }}">
+                                </div>
+                                <div>
+                                    <label class="form-label">Questão Anulada:</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="questao_anulada" value="True">
+                                        <label class="form-check-label">Sim</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="questao_anulada" value="False">
+                                        <label class="form-check-label">Não</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer btn-group d-flex justify-content-center">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            {% endfor %}
-            {% if current_user.tipo_usuario == "professor" %}
-                <button type="submit" id="submitBtn" class="btn btn-secondary">Editar Resultado</button>
-            {% endif %}
-        </form>
+            </div>
+        {% endfor %}
     </div>
-<body>
+</div>
 {% endblock %}
