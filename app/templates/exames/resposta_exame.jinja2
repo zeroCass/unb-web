@@ -32,10 +32,10 @@
                 {% endif %}
                 <ul class="list-group">
                     <li class="list-group-item">Respota Correta: {{ questao_exame.resposta }}</li>
-                    {% if questao_exame.resposta == questao_exame.resposta_estudante%}
-                        <li class="list-group-item list-group-item-success">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
-                    {% elif questao_exame.anulada or questao_exame.tipo_questao == "dissertativa" %}
+                    {% if questao_exame.anulada or questao_exame.tipo_questao == "dissertativa" %}
                         <li class="list-group-item list-group-item-secondary">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
+                    {% elif questao_exame.resposta == questao_exame.resposta_estudante %}
+                        <li class="list-group-item list-group-item-success">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
                     {% else %}
                         <li class="list-group-item list-group-item-danger">Respota estudante: {{ questao_exame.resposta_estudante }}</li>
                     {% endif %}

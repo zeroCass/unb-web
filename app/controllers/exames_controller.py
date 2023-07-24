@@ -384,21 +384,42 @@ def editar_questao_exame(turma_id: int, exame_id: int, estudante_id: int, questa
         questao_anulada = request.form['questao_anulada']
 
         questao_exame = QuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).first()
+        
         # Recupera a resposta da questão a ser editada
         resposta_questao_exame = RespostaQuestaoExame.query.filter_by(
             estudante_id=estudante_id, exame_id=exame_id, questao_id=questao_id).first()
 
+        # armazena qual a antiga nota do aluno
+        nota_estudante_velha = resposta_questao_exame.nota_estudante_questao
+        print(f"Velha Nota Questao: {nota_estudante_velha}")
+
         # Atualiza os valores com as informações do formulário
         if questao_anulada == "True":
-            resposta_questao_exame.nota_estudante_questao = questao_exame.nota_questao
             questao_exame.anulada = True
+            
+            # todas as respostas dos estudantes para a questão específica do exame mudam o valor
+            respostas_questao_exame = RespostaQuestaoExame.query.filter_by(exame_id=exame_id, questao_id=questao_id).all()
+            for resposta in respostas_questao_exame:
+                resposta.nota_estudante_questao = questao_exame.nota_questao # recebe o valor cheio da questao
+
+            # Alterar onde alterar a nota do exame dos alunos com questao anulada, essa possivel nova tela 
+            # (quando prof visualiza a prova) para anular a questao para todos os estudante de uma vez só
+            
         else:
-            resposta_questao_exame.nota_estudante_questao = nova_nota_estudante
             questao_exame.anulada = False
+            resposta_questao_exame.nota_estudante_questao = nova_nota_estudante # recebe a nova nota do aluno na questão
+
+            nova_nota_exame = nova_nota_estudante - nota_estudante_velha
+            print(f"Nova nota Questao {nova_nota_estudante} - Sub: {nova_nota_exame}")
+
+            nota_estudante = NotasExames.query.filter_by(exame_id=exame_id, estudante_id=estudante_id).first()
+            print(f"{nota_estudante} ") # nota exame do estudante antes de mudar
+
+            nota_estudante.nota_exame_estudante += nova_nota_exame
+            print(f"{nota_estudante}") # nota exame do estudante depois de mudar
 
         # Salva as alterações no banco de dados
         db.session.commit()
-
         flash("Alterações feitas com sucesso!", category="success")
 
     except Exception as e:
